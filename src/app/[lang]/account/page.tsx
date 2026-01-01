@@ -1,31 +1,17 @@
-'use client';
+export const dynamic = 'force-dynamic';
+import { AccountForm } from "@/components/auth/account-form";
+import { Locale } from "../../../../i18n-config";
+import { getDictionary } from "@/lib/get-dictionary";
 
-import { useSession } from "@/context/session-provider";
-import { useRouter } from "next/navigation";
-import { useEffect } from "react";
-
-export default function AccountPage() {
-  const { user, loading } = useSession();
-  const router = useRouter();
-
-  useEffect(() => {
-    if (!loading && !user) {
-      router.push('/'); // Redirect to home if not logged in
-    }
-  }, [user, loading, router]);
-
-  if (loading) {
-    return <div className="flex justify-center items-center h-screen"><p>Loading...</p></div>;
-  }
-
-  if (!user) {
-    return null; // or a login prompt
-  }
-
+export default async function AccountPage({
+  params: { lang },
+}: {
+  params: { lang: Locale };
+}) {
+  const dictionary = await getDictionary(lang);
   return (
-    <div className="container mx-auto py-12 px-4 md:px-6">
-      <h1 className="text-3xl font-bold font-headline">My Account</h1>
-      <p className="text-muted-foreground mt-2">This page is under construction. Please check back later.</p>
+    <div className="w-full min-h-[calc(100vh-8rem)] flex items-center justify-center p-4">
+      <AccountForm dictionary={dictionary.accountForm} />
     </div>
   );
 }

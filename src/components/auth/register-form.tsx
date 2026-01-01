@@ -71,7 +71,7 @@ export function RegisterForm({ dictionary: t, lang }: { dictionary: Dictionary, 
         title: t.toast.title,
         description: t.toast.description,
       });
-      router.push(`/${lang}`);
+      router.push(`/${lang}/account`);
     } catch (error: any) {
       toast({
         title: "Error",
