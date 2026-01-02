@@ -113,7 +113,12 @@
     "login": "Login",
     "toast": {
       "title": "Account Created!",
-      "description": "Welcome to Crazy Bakery! Please login to continue."
+      "description": "Welcome to Crazy Bakery! Please login to continue.",
+      "error": {
+        "title": "Registration Error",
+        "emailInUse": "This email is already registered. Please try another one.",
+        "generic": "An unexpected error occurred. Please try again."
+      }
     },
     "validation": {
       "name": "Name must be at least 2 characters.",

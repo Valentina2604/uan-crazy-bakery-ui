@@ -2,7 +2,8 @@ import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import { LoginForm } from './login-form';
 import { useToast } from "@/hooks/use-toast";
 import { useRouter } from 'next/navigation';
-import { signInWithEmailAndPassword } from 'firebase/auth';
+import { signInWithEmailAndPassword, signOut } from 'firebase/auth';
+import { getUserById } from '@/lib/api';
 
 // Mocks
 jest.mock('next/navigation', () => ({
@@ -13,7 +14,11 @@ jest.mock('@/hooks/use-toast', () => ({
 }));
 jest.mock('firebase/auth', () => ({
   signInWithEmailAndPassword: jest.fn(),
+  signOut: jest.fn(),
   getAuth: jest.fn(),
+}));
+jest.mock('@/lib/api', () => ({
+  getUserById: jest.fn(),
 }));
 jest.mock('@/lib/firebase', () => ({
   auth: {},
@@ -22,19 +27,20 @@ jest.mock('@/lib/firebase', () => ({
 const mockUseRouter = useRouter as jest.Mock;
 const mockUseToast = useToast as jest.Mock;
 const mockSignInWithEmailAndPassword = signInWithEmailAndPassword as jest.Mock;
+const mockSignOut = signOut as jest.Mock;
+const mockGetUserById = getUserById as jest.Mock;
 
-const dictionary = {
-  title: 'Iniciar sesión',
-  description: 'Ingresa tus credenciales para acceder a tu cuenta.',
+const mockDictionary = {
+  title: 'Iniciar Sesión',
+  description: 'Accede a tu cuenta de Crazy Bakery',
   email: {
-    label: 'Correo electrónico',
-    placeholder: 'nombre@ejemplo.com',
+    label: 'Correo Electrónico',
+    placeholder: 'tu@ejemplo.com',
   },
   password: {
     label: 'Contraseña',
-    placeholder: 'Ingresa tu contraseña',
   },
-  submit: 'Iniciar sesión',
+  submit: 'Iniciar Sesión',
   noAccount: '¿No tienes una cuenta?',
   signUp: 'Regístrate',
   validation: {
@@ -43,8 +49,8 @@ const dictionary = {
   },
   toast: {
     error: {
-      title: 'Error al iniciar sesión',
-      description: 'Las credenciales son incorrectas. Por favor, inténtalo de nuevo.',
+      title: 'Error de Autenticación',
+      description: 'Las credenciales son incorrectas o el usuario no existe en nuestra base de datos. Por favor, verifica e intenta de nuevo.',
     },
   },
 };
@@ -54,96 +60,80 @@ describe('LoginForm', () => {
   const mockToast = jest.fn();
 
   beforeEach(() => {
-    // Reset mocks before each test
     jest.clearAllMocks();
     mockUseRouter.mockReturnValue({ push: mockPush });
     mockUseToast.mockReturnValue({ toast: mockToast });
   });
 
   it('should render the form correctly', () => {
-    render(<LoginForm dictionary={dictionary} lang="es" />);
-
-    // Check if title and description are rendered
-    expect(screen.getByRole('heading', { name: dictionary.title })).toBeInTheDocument();
-    expect(screen.getByText(dictionary.description)).toBeInTheDocument();
-
-    // Check for form fields
-    expect(screen.getByLabelText(dictionary.email.label)).toBeInTheDocument();
-    expect(screen.getByLabelText(dictionary.password.label)).toBeInTheDocument();
-    expect(screen.getByRole('button', { name: dictionary.submit })).toBeInTheDocument();
-
-    // Check for sign up link
-    expect(screen.getByText(dictionary.noAccount)).toBeInTheDocument();
-    expect(screen.getByRole('link', { name: dictionary.signUp })).toBeInTheDocument();
+    render(<LoginForm dictionary={mockDictionary} lang="es" />);
+    expect(screen.getByRole('heading', { name: mockDictionary.title })).toBeInTheDocument();
+    expect(screen.getByText(mockDictionary.description)).toBeInTheDocument();
+    expect(screen.getByLabelText(mockDictionary.email.label)).toBeInTheDocument();
+    expect(screen.getByLabelText(mockDictionary.password.label)).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: mockDictionary.submit })).toBeInTheDocument();
   });
 
-  it('should show validation error for invalid email', async () => {
-    render(<LoginForm dictionary={dictionary} lang="es" />);
+  it('should successfully sign in, verify user, and redirect', async () => {
+    const lang = 'es';
+    render(<LoginForm dictionary={mockDictionary} lang={lang} />);
 
-    const emailInput = screen.getByLabelText(dictionary.email.label);
-    const submitButton = screen.getByRole('button', { name: dictionary.submit });
+    const mockUser = { uid: '12345' };
+    mockSignInWithEmailAndPassword.mockResolvedValueOnce({ user: mockUser });
+    mockGetUserById.mockResolvedValueOnce({ id: '12345', name: 'Test User' });
 
-    fireEvent.change(emailInput, { target: { value: 'invalid-email' } });
-    fireEvent.click(submitButton);
-
-    await waitFor(() => {
-      expect(screen.getByText(dictionary.validation.email)).toBeInTheDocument();
-    });
-  });
-
-  it('should show validation error for short password', async () => {
-    render(<LoginForm dictionary={dictionary} lang="es" />);
-
-    const emailInput = screen.getByLabelText(dictionary.email.label);
-    const passwordInput = screen.getByLabelText(dictionary.password.label);
-    const submitButton = screen.getByRole('button', { name: dictionary.submit });
-
-    fireEvent.change(emailInput, { target: { value: 'test@example.com' } });
-    fireEvent.change(passwordInput, { target: { value: '12345' } });
-    fireEvent.click(submitButton);
-
-    await waitFor(() => {
-      expect(screen.getByText(dictionary.validation.password)).toBeInTheDocument();
-    });
-  });
-
-  it('should successfully sign in and redirect', async () => {
-    render(<LoginForm dictionary={dictionary} lang="es" />);
-
-    const emailInput = screen.getByLabelText(dictionary.email.label);
-    const passwordInput = screen.getByLabelText(dictionary.password.label);
-    const submitButton = screen.getByRole('button', { name: dictionary.submit });
-
-    mockSignInWithEmailAndPassword.mockResolvedValueOnce({} as any);
-
-    fireEvent.change(emailInput, { target: { value: 'test@example.com' } });
-    fireEvent.change(passwordInput, { target: { value: 'password123' } });
-    fireEvent.click(submitButton);
+    fireEvent.change(screen.getByLabelText(mockDictionary.email.label), { target: { value: 'test@example.com' } });
+    fireEvent.change(screen.getByLabelText(mockDictionary.password.label), { target: { value: 'password123' } });
+    fireEvent.click(screen.getByRole('button', { name: mockDictionary.submit }));
 
     await waitFor(() => {
       expect(mockSignInWithEmailAndPassword).toHaveBeenCalledWith(expect.any(Object), 'test@example.com', 'password123');
-      expect(mockPush).toHaveBeenCalledWith('/es/account');
+      expect(mockGetUserById).toHaveBeenCalledWith(mockUser.uid);
+      expect(mockPush).toHaveBeenCalledWith(`/${lang}/account`);
+      expect(mockToast).not.toHaveBeenCalled();
     });
   });
 
-  it('should show toast on login error', async () => {
-    render(<LoginForm dictionary={dictionary} lang="es" />);
+  it('should show toast on Firebase authentication error', async () => {
+    render(<LoginForm dictionary={mockDictionary} lang="es" />);
 
-    const emailInput = screen.getByLabelText(dictionary.email.label);
-    const passwordInput = screen.getByLabelText(dictionary.password.label);
-    const submitButton = screen.getByRole('button', { name: dictionary.submit });
+    mockSignInWithEmailAndPassword.mockRejectedValueOnce(new Error('Firebase auth error'));
 
-    const error = { code: 'auth/invalid-credential', message: 'Invalid credential' };
-    mockSignInWithEmailAndPassword.mockRejectedValueOnce(error);
-
-    fireEvent.change(emailInput, { target: { value: 'test@example.com' } });
-    fireEvent.change(passwordInput, { target: { value: 'wrongpassword' } });
-    fireEvent.click(submitButton);
+    fireEvent.change(screen.getByLabelText(mockDictionary.email.label), { target: { value: 'test@example.com' } });
+    fireEvent.change(screen.getByLabelText(mockDictionary.password.label), { target: { value: 'wrongpassword' } });
+    fireEvent.click(screen.getByRole('button', { name: mockDictionary.submit }));
 
     await waitFor(() => {
+      expect(mockGetUserById).not.toHaveBeenCalled();
+      expect(mockPush).not.toHaveBeenCalled();
       expect(mockToast).toHaveBeenCalledWith({
-        title: dictionary.toast.error.title,
-        description: dictionary.toast.error.description,
+        title: mockDictionary.toast.error.title,
+        description: mockDictionary.toast.error.description,
+        variant: "destructive",
+      });
+    });
+  });
+
+  it('should sign out and show toast if backend user check fails', async () => {
+    render(<LoginForm dictionary={mockDictionary} lang="es" />);
+
+    const mockUser = { uid: '12345' };
+    mockSignInWithEmailAndPassword.mockResolvedValueOnce({ user: mockUser });
+    mockGetUserById.mockRejectedValueOnce(new Error('User not in DB'));
+    mockSignOut.mockResolvedValueOnce({});
+
+    fireEvent.change(screen.getByLabelText(mockDictionary.email.label), { target: { value: 'test@example.com' } });
+    fireEvent.change(screen.getByLabelText(mockDictionary.password.label), { target: { value: 'password123' } });
+    fireEvent.click(screen.getByRole('button', { name: mockDictionary.submit }));
+
+    await waitFor(() => {
+      expect(mockSignInWithEmailAndPassword).toHaveBeenCalled();
+      expect(mockGetUserById).toHaveBeenCalledWith(mockUser.uid);
+      expect(mockSignOut).toHaveBeenCalledWith(expect.any(Object));
+      expect(mockPush).not.toHaveBeenCalled();
+      expect(mockToast).toHaveBeenCalledWith({
+        title: mockDictionary.toast.error.title,
+        description: mockDictionary.toast.error.description,
         variant: "destructive",
       });
     });

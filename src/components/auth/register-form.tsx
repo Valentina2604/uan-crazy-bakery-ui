@@ -6,7 +6,8 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
 import { useState } from "react";
-import { createUserWithEmailAndPassword } from "firebase/auth";
+import { createUserWithEmailAndPassword, deleteUser } from "firebase/auth";
+import { createUser } from "@/lib/api";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -65,17 +66,52 @@ export function RegisterForm({ dictionary: t, lang }: { dictionary: Dictionary, 
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
     setIsLoading(true);
+    let firebaseUser = null;
+
     try {
-      await createUserWithEmailAndPassword(auth, values.email, values.password);
+      const userCredential = await createUserWithEmailAndPassword(auth, values.email, values.password);
+      firebaseUser = userCredential.user;
+
+      const [firstName, ...lastNameParts] = values.name.split(' ');
+      const lastName = lastNameParts.join(' ');
+
+      const userData = {
+        id: firebaseUser.uid,
+        email: values.email,
+        nombre: firstName,
+        apellido: lastName || ' ',
+        tipo: "consumidor",
+        telefono: "",
+        direccion: "",
+        departamento: "",
+        ciudad: "",
+      };
+
+      await createUser(userData);
+
       toast({
         title: t.toast.title,
         description: t.toast.description,
       });
       router.push(`/${lang}/account`);
+
     } catch (error: any) {
+      if (firebaseUser) {
+        try {
+          await deleteUser(firebaseUser);
+        } catch (deleteError: any) {
+          // In a real app, you might want to log this to a service like Sentry
+        }
+      }
+
+      let description = t.toast.error.generic;
+      if (error.code === 'auth/email-already-in-use') {
+        description = t.toast.error.emailInUse;
+      }
+      
       toast({
-        title: "Error",
-        description: error.message || "An unexpected error occurred.",
+        title: t.toast.error.title,
+        description: description,
         variant: "destructive",
       });
     } finally {

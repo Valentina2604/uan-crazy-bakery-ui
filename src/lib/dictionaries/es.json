@@ -113,7 +113,12 @@
     "login": "Iniciar Sesión",
     "toast": {
       "title": "¡Cuenta Creada!",
-      "description": "¡Bienvenido a Crazy Bakery! Por favor, inicia sesión para continuar."
+      "description": "¡Bienvenido a Crazy Bakery! Por favor, inicia sesión para continuar.",
+      "error": {
+        "title": "Error de Registro",
+        "emailInUse": "Este correo electrónico ya está registrado. Por favor, intenta con otro.",
+        "generic": "Ocurrió un error inesperado. Por favor, inténtalo de nuevo."
+      }
     },
     "validation": {
       "name": "El nombre debe tener al menos 2 caracteres.",

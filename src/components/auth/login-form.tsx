@@ -5,8 +5,10 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
 import { useRouter } from 'next/navigation';
-import { signInWithEmailAndPassword } from "firebase/auth";
+import { useState } from "react";
+import { signInWithEmailAndPassword, signOut } from "firebase/auth";
 import { auth } from "@/lib/firebase";
+import { getUserById } from "@/lib/api";
 import { useToast } from "@/hooks/use-toast";
 
 import { Button } from "@/components/ui/button";
@@ -34,6 +36,7 @@ type Dictionary = Awaited<ReturnType<typeof getDictionary>>['loginForm'];
 export function LoginForm({ dictionary: t, lang }: { dictionary: Dictionary, lang: Locale }) {
   const router = useRouter();
   const { toast } = useToast();
+  const [isLoading, setIsLoading] = useState(false);
 
   const formSchema = z.object({
     email: z.string().email({
@@ -53,16 +56,29 @@ export function LoginForm({ dictionary: t, lang }: { dictionary: Dictionary, lan
   });
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
-    const { email, password } = values;
+    setIsLoading(true);
     try {
-        await signInWithEmailAndPassword(auth, email, password);
+      const userCredential = await signInWithEmailAndPassword(auth, values.email, values.password);
+
+      try {
+        await getUserById(userCredential.user.uid);
         router.push(`/${lang}/account`);
-    } catch (error: any) {
+      } catch (backendError) {
+        await signOut(auth);
         toast({
           title: t.toast.error.title,
-          description: t.toast.error.description,
+          description: t.toast.error.description, 
           variant: "destructive",
         });
+      }
+    } catch (authError) {
+      toast({
+        title: t.toast.error.title,
+        description: t.toast.error.description,
+        variant: "destructive",
+      });
+    } finally {
+      setIsLoading(false);
     }
   }
 
@@ -103,8 +119,8 @@ export function LoginForm({ dictionary: t, lang }: { dictionary: Dictionary, lan
                 </FormItem>
               )}
             />
-            <Button type="submit" className="w-full bg-primary text-primary-foreground hover:bg-primary/90">
-              {t.submit}
+            <Button type="submit" className="w-full bg-primary text-primary-foreground hover:bg-primary/90" disabled={isLoading}>
+              {isLoading ? 'Cargando...' : t.submit}
             </Button>
           </form>
         </Form>

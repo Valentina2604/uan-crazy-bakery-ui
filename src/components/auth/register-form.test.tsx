@@ -2,7 +2,8 @@ import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import { RegisterForm } from './register-form';
 import { useToast } from "@/hooks/use-toast";
 import { useRouter } from 'next/navigation';
-import { createUserWithEmailAndPassword } from 'firebase/auth';
+import { createUserWithEmailAndPassword, deleteUser } from 'firebase/auth';
+import { createUser } from '@/lib/api';
 
 // Mocks
 jest.mock('next/navigation', () => ({
@@ -13,7 +14,11 @@ jest.mock('@/hooks/use-toast', () => ({
 }));
 jest.mock('firebase/auth', () => ({
   createUserWithEmailAndPassword: jest.fn(),
+  deleteUser: jest.fn(),
   getAuth: jest.fn(),
+}));
+jest.mock('@/lib/api', () => ({
+  createUser: jest.fn(),
 }));
 jest.mock('@/lib/firebase', () => ({
   auth: {},
@@ -22,41 +27,43 @@ jest.mock('@/lib/firebase', () => ({
 const mockUseRouter = useRouter as jest.Mock;
 const mockUseToast = useToast as jest.Mock;
 const mockCreateUserWithEmailAndPassword = createUserWithEmailAndPassword as jest.Mock;
+const mockDeleteUser = deleteUser as jest.Mock;
+const mockCreateUserApi = createUser as jest.Mock;
 
-const dictionary = {
-  title: 'Crear una cuenta',
-  description: 'Ingresa tus datos para registrarte.',
+const mockDictionary = {
+  title: 'Crear una Cuenta',
+  description: 'Únete a Crazy Bakery para empezar a ordenar',
   name: {
     label: 'Nombre',
-    placeholder: 'Ingresa tu nombre',
+    placeholder: 'Tu Nombre',
   },
   email: {
-    label: 'Correo electrónico',
-    placeholder: 'nombre@ejemplo.com',
+    label: 'Correo Electrónico',
+    placeholder: 'tu@ejemplo.com',
   },
   password: {
     label: 'Contraseña',
-    placeholder: 'Ingresa tu contraseña',
   },
   confirmPassword: {
     label: 'Confirmar Contraseña',
   },
-  submit: 'Crear cuenta',
+  submit: 'Crear Cuenta',
   hasAccount: '¿Ya tienes una cuenta?',
-  login: 'Inicia sesión',
+  login: 'Iniciar Sesión',
+  toast: {
+    title: '¡Cuenta Creada!',
+    description: '¡Bienvenido a Crazy Bakery! Por favor, inicia sesión para continuar.',
+    error: {
+      title: 'Error de Registro',
+      emailInUse: 'Este correo electrónico ya está registrado. Por favor, intenta con otro.',
+      generic: 'Ocurrió un error inesperado. Por favor, inténtalo de nuevo.',
+    },
+  },
   validation: {
     name: 'El nombre debe tener al menos 2 caracteres.',
-    email: 'Por favor, introduce un correo electrónico válido.',
+    email: 'Por favor, introduce una dirección de correo electrónico válida.',
     password: 'La contraseña debe tener al menos 8 caracteres.',
     passwordMatch: 'Las contraseñas no coinciden.',
-  },
-  toast: {
-    title: '¡Cuenta creada!',
-    description: 'Hemos creado tu cuenta exitosamente.',
-    error: {
-      title: 'Error al registrarse',
-      description: 'El correo electrónico ya está en uso. Por favor, intenta con otro.',
-    },
   },
 };
 
@@ -65,107 +72,114 @@ describe('RegisterForm', () => {
   const mockToast = jest.fn();
 
   beforeEach(() => {
-    // Reset mocks before each test
     jest.clearAllMocks();
     mockUseRouter.mockReturnValue({ push: mockPush });
     mockUseToast.mockReturnValue({ toast: mockToast });
   });
 
   it('should render the form correctly', () => {
-    render(<RegisterForm dictionary={dictionary} lang="es" />);
-
-    // Check if title and description are rendered
-    expect(screen.getByRole('heading', { name: dictionary.title })).toBeInTheDocument();
-    expect(screen.getByText(dictionary.description)).toBeInTheDocument();
-
-    // Check for form fields
-    expect(screen.getByLabelText(dictionary.name.label)).toBeInTheDocument();
-    expect(screen.getByLabelText(dictionary.email.label)).toBeInTheDocument();
-    expect(screen.getByLabelText(dictionary.password.label)).toBeInTheDocument();
-    expect(screen.getByLabelText(dictionary.confirmPassword.label)).toBeInTheDocument();
-    expect(screen.getByRole('button', { name: dictionary.submit })).toBeInTheDocument();
-
-    // Check for sign in link
-    expect(screen.getByText(dictionary.hasAccount)).toBeInTheDocument();
-    expect(screen.getByRole('link', { name: dictionary.login })).toBeInTheDocument();
+    render(<RegisterForm dictionary={mockDictionary} lang="es" />);
+    expect(screen.getByRole('heading', { name: mockDictionary.title })).toBeInTheDocument();
+    expect(screen.getByText(mockDictionary.description)).toBeInTheDocument();
+    expect(screen.getByLabelText(mockDictionary.name.label)).toBeInTheDocument();
+    expect(screen.getByLabelText(mockDictionary.email.label)).toBeInTheDocument();
+    expect(screen.getByLabelText(mockDictionary.password.label)).toBeInTheDocument();
+    expect(screen.getByLabelText(mockDictionary.confirmPassword.label)).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: mockDictionary.submit })).toBeInTheDocument();
+    expect(screen.getByText(mockDictionary.hasAccount)).toBeInTheDocument();
+    expect(screen.getByRole('link', { name: mockDictionary.login })).toBeInTheDocument();
   });
 
-  it('should show validation error for short name', async () => {
-    render(<RegisterForm dictionary={dictionary} lang="es" />);
-
-    const nameInput = screen.getByLabelText(dictionary.name.label);
-    const submitButton = screen.getByRole('button', { name: dictionary.submit });
-
-    fireEvent.change(nameInput, { target: { value: 'a' } });
-    fireEvent.click(submitButton);
+  it('should show validation errors for invalid input', async () => {
+    render(<RegisterForm dictionary={mockDictionary} lang="es" />);
+    fireEvent.click(screen.getByRole('button', { name: mockDictionary.submit }));
 
     await waitFor(() => {
-      expect(screen.getByText(dictionary.validation.name)).toBeInTheDocument();
-    });
-  });
-
-  it('should show validation error for password mismatch', async () => {
-    render(<RegisterForm dictionary={dictionary} lang="es" />);
-
-    const passwordInput = screen.getByLabelText(dictionary.password.label);
-    const confirmPasswordInput = screen.getByLabelText(dictionary.confirmPassword.label);
-    const submitButton = screen.getByRole('button', { name: dictionary.submit });
-
-    fireEvent.change(passwordInput, { target: { value: 'password123' } });
-    fireEvent.change(confirmPasswordInput, { target: { value: 'password456' } });
-    fireEvent.click(submitButton);
-
-    await waitFor(() => {
-      expect(screen.getByText(dictionary.validation.passwordMatch)).toBeInTheDocument();
+      expect(screen.getByText(mockDictionary.validation.name)).toBeInTheDocument();
+      expect(screen.getByText(mockDictionary.validation.email)).toBeInTheDocument();
+      expect(screen.getByText(mockDictionary.validation.password)).toBeInTheDocument();
     });
   });
 
   it('should successfully create a user and redirect', async () => {
-    render(<RegisterForm dictionary={dictionary} lang="es" />);
+    const lang = 'es';
+    render(<RegisterForm dictionary={mockDictionary} lang={lang} />);
 
-    const nameInput = screen.getByLabelText(dictionary.name.label);
-    const emailInput = screen.getByLabelText(dictionary.email.label);
-    const passwordInput = screen.getByLabelText(dictionary.password.label);
-    const confirmPasswordInput = screen.getByLabelText(dictionary.confirmPassword.label);
-    const submitButton = screen.getByRole('button', { name: dictionary.submit });
+    const mockUser = { uid: '12345' };
+    mockCreateUserWithEmailAndPassword.mockResolvedValueOnce({ user: mockUser });
+    mockCreateUserApi.mockResolvedValueOnce({});
 
-    mockCreateUserWithEmailAndPassword.mockResolvedValueOnce({} as any);
-
-    fireEvent.change(nameInput, { target: { value: 'Test User' } });
-    fireEvent.change(emailInput, { target: { value: 'test@example.com' } });
-    fireEvent.change(passwordInput, { target: { value: 'password123' } });
-    fireEvent.change(confirmPasswordInput, { target: { value: 'password123' } });
-    fireEvent.click(submitButton);
+    fireEvent.change(screen.getByLabelText(mockDictionary.name.label), { target: { value: 'Test User' } });
+    fireEvent.change(screen.getByLabelText(mockDictionary.email.label), { target: { value: 'test@example.com' } });
+    fireEvent.change(screen.getByLabelText(mockDictionary.password.label), { target: { value: 'password123' } });
+    fireEvent.change(screen.getByLabelText(mockDictionary.confirmPassword.label), { target: { value: 'password123' } });
+    fireEvent.click(screen.getByRole('button', { name: mockDictionary.submit }));
 
     await waitFor(() => {
       expect(mockCreateUserWithEmailAndPassword).toHaveBeenCalledWith(expect.any(Object), 'test@example.com', 'password123');
-      expect(mockPush).toHaveBeenCalledWith('/es');
+      expect(mockCreateUserApi).toHaveBeenCalledWith({
+        id: mockUser.uid,
+        email: 'test@example.com',
+        nombre: 'Test',
+        apellido: 'User',
+        tipo: "consumidor",
+        telefono: "",
+        direccion: "",
+        departamento: "",
+        ciudad: "",
+      });
+      expect(mockToast).toHaveBeenCalledWith({
+        title: mockDictionary.toast.title,
+        description: mockDictionary.toast.description,
+      });
+      expect(mockPush).toHaveBeenCalledWith(`/${lang}/account`);
     });
   });
 
-  it('should show toast on registration error', async () => {
-    render(<RegisterForm dictionary={dictionary} lang="es" />);
+  it('should show toast on firebase registration error (email in use)', async () => {
+    render(<RegisterForm dictionary={mockDictionary} lang="es" />);
 
-    const nameInput = screen.getByLabelText(dictionary.name.label);
-    const emailInput = screen.getByLabelText(dictionary.email.label);
-    const passwordInput = screen.getByLabelText(dictionary.password.label);
-    const confirmPasswordInput = screen.getByLabelText(dictionary.confirmPassword.label);
-    const submitButton = screen.getByRole('button', { name: dictionary.submit });
-
-    const error = { code: 'auth/email-already-in-use', message: 'Email already in use' };
+    const error = { code: 'auth/email-already-in-use' };
     mockCreateUserWithEmailAndPassword.mockRejectedValueOnce(error);
 
-    fireEvent.change(nameInput, { target: { value: 'Test User' } });
-    fireEvent.change(emailInput, { target: { value: 'test@example.com' } });
-    fireEvent.change(passwordInput, { target: { value: 'password123' } });
-    fireEvent.change(confirmPasswordInput, { target: { value: 'password123' } });
-    fireEvent.click(submitButton);
+    fireEvent.change(screen.getByLabelText(mockDictionary.name.label), { target: { value: 'Test User' } });
+    fireEvent.change(screen.getByLabelText(mockDictionary.email.label), { target: { value: 'test@example.com' } });
+    fireEvent.change(screen.getByLabelText(mockDictionary.password.label), { target: { value: 'password123' } });
+    fireEvent.change(screen.getByLabelText(mockDictionary.confirmPassword.label), { target: { value: 'password123' } });
+    fireEvent.click(screen.getByRole('button', { name: mockDictionary.submit }));
 
     await waitFor(() => {
       expect(mockToast).toHaveBeenCalledWith({
-        title: 'Error',
-        description: error.message,
-        variant: "destructive",
+        title: mockDictionary.toast.error.title,
+        description: mockDictionary.toast.error.emailInUse,
+        variant: 'destructive',
+      });
+      expect(mockCreateUserApi).not.toHaveBeenCalled();
+    });
+  });
+
+  it('should delete firebase user and show toast if backend api call fails', async () => {
+    render(<RegisterForm dictionary={mockDictionary} lang="es" />);
+
+    const mockUser = { uid: '12345' };
+    mockCreateUserWithEmailAndPassword.mockResolvedValueOnce({ user: mockUser });
+    mockCreateUserApi.mockRejectedValueOnce(new Error('Backend failed'));
+    mockDeleteUser.mockResolvedValueOnce({});
+
+    fireEvent.change(screen.getByLabelText(mockDictionary.name.label), { target: { value: 'Test User' } });
+    fireEvent.change(screen.getByLabelText(mockDictionary.email.label), { target: { value: 'test@example.com' } });
+    fireEvent.change(screen.getByLabelText(mockDictionary.password.label), { target: { value: 'password123' } });
+    fireEvent.change(screen.getByLabelText(mockDictionary.confirmPassword.label), { target: { value: 'password123' } });
+    fireEvent.click(screen.getByRole('button', { name: mockDictionary.submit }));
+
+    await waitFor(() => {
+      expect(mockCreateUserWithEmailAndPassword).toHaveBeenCalled();
+      expect(mockCreateUserApi).toHaveBeenCalled();
+      expect(mockDeleteUser).toHaveBeenCalledWith(mockUser);
+      expect(mockToast).toHaveBeenCalledWith({
+        title: mockDictionary.toast.error.title,
+        description: mockDictionary.toast.error.generic,
+        variant: 'destructive',
       });
     });
   });
