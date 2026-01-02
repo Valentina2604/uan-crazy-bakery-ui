@@ -1,7 +1,6 @@
 'use client';
 
 import Link from "next/link";
-import { useRouter } from "next/navigation";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
@@ -35,7 +34,6 @@ type Dictionary = Awaited<ReturnType<typeof getDictionary>>['registerForm'];
 
 export function RegisterForm({ dictionary: t, lang }: { dictionary: Dictionary, lang: Locale }) {
   const { toast } = useToast();
-  const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
 
   const formSchema = z.object({
@@ -93,7 +91,9 @@ export function RegisterForm({ dictionary: t, lang }: { dictionary: Dictionary, 
         title: t.toast.title,
         description: t.toast.description,
       });
-      router.push(`/${lang}/account`);
+      
+      // Hard redirect to ensure session is updated across the app
+      window.location.href = `/${lang}/dashboard/consumer`;
 
     } catch (error: any) {
       if (firebaseUser) {

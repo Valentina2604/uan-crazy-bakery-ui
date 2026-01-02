@@ -1,12 +1,30 @@
 import 'server-only';
 import type { Locale } from '../../i18n-config';
 
-// We enumerate all dictionaries here for better linting and typescript support
-// We also get the default import for cleaner types
 const dictionaries = {
   en: () => import('@/lib/dictionaries/en.json').then((module) => module.default),
   es: () => import('@/lib/dictionaries/es.json').then((module) => module.default),
 };
 
-export const getDictionary = async (locale: Locale) =>
-  dictionaries[locale]?.() ?? dictionaries.en();
+const orderDictionaries = {
+  en: () => import('@/lib/dictionaries/order.json').then((module) => module.default),
+  es: () => import('@/lib/dictionaries/order.json').then((module) => module.default),
+};
+
+const privacyDictionaries = {
+  en: () => import('@/lib/dictionaries/privacy.json').then((module) => module.default),
+  es: () => import('@/lib/dictionaries/privacy.json').then((module) => module.default),
+};
+
+const termsDictionaries = {
+  en: () => import('@/lib/dictionaries/terms.json').then((module) => module.default),
+  es: () => import('@/lib/dictionaries/terms.json').then((module) => module.default),
+};
+
+export const getDictionary = async (locale: Locale) => {
+  const dictionary = await (dictionaries[locale]?.() ?? dictionaries.en());
+  const orderDictionary = await (orderDictionaries[locale]?.() ?? orderDictionaries.en());
+  const privacyDictionary = await (privacyDictionaries[locale]?.() ?? privacyDictionaries.en());
+  const termsDictionary = await (termsDictionaries[locale]?.() ?? termsDictionaries.en());
+  return { ...dictionary, ...orderDictionary, ...privacyDictionary, ...termsDictionary };
+};

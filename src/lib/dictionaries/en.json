@@ -158,5 +158,30 @@
       "title": "3. Intellectual Property",
       "p1": "The Service and its original content, features, and functionality are and will remain the exclusive property of Crazy Bakery and its licensors."
     }
+  },
+  "unauthorized": {
+    "title": "Unauthorized Access",
+    "description": "We're sorry, but you do not have the necessary permissions to access this page. This area is restricted and requires proper authorization.",
+    "backToHome": "Back to Home"
+  },
+  "adminDashboard": {
+    "title": "Administrator Dashboard",
+    "description": "Welcome to the administrator dashboard. Here you can manage the entire system.",
+    "cards": {
+      "products": {
+        "title": "Manage Products",
+        "description": "Add, edit, and remove products from the catalog."
+      }
+    }
+  },
+  "consumerDashboard": {
+    "title": "Consumer Dashboard",
+    "description": "Welcome to your dashboard. Here you can manage your orders and account.",
+    "cards": {
+      "orders": {
+        "title": "My Orders",
+        "description": "View your order history and track current orders."
+      }
+    }
   }
 }

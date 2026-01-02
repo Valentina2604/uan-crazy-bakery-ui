@@ -1,0 +1,18 @@
+{
+  "privacy": {
+    "title": "Política de Privacidad",
+    "welcome": "Bienvenido a la política de privacidad de Dulce Manía. Tu privacidad es importante para nosotros.",
+    "info": {
+      "title": "Información que Recopilamos",
+      "p1": "Recopilamos información que nos proporcionas directamente, como tu nombre, correo electrónico y dirección cuando te registras o realizas un pedido."
+    },
+    "howWeUse": {
+      "title": "Cómo Usamos tu Información",
+      "p1": "Usamos la información que recopilamos para procesar tus pedidos, comunicarnos contigo y mejorar nuestros servicios."
+    },
+    "sharing": {
+      "title": "Cómo Compartimos tu Información",
+      "p1": "No compartimos tu información personal con terceros, excepto cuando es necesario para completar tu pedido (por ejemplo, con nuestros socios de envío)."
+    }
+  }
+}

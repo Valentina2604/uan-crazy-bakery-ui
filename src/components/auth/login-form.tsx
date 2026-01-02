@@ -31,7 +31,7 @@ import {
 import { Locale } from "../../../i18n-config";
 import type { getDictionary } from "@/lib/get-dictionary";
 
-type Dictionary = Awaited<ReturnType<typeof getDictionary>>['loginForm'];
+type Dictionary = Awaited<ReturnType<typeof getDictionary>>;
 
 export function LoginForm({ dictionary: t, lang }: { dictionary: Dictionary, lang: Locale }) {
   const router = useRouter();
@@ -40,10 +40,10 @@ export function LoginForm({ dictionary: t, lang }: { dictionary: Dictionary, lan
 
   const formSchema = z.object({
     email: z.string().email({
-      message: t.validation.email,
+      message: t.loginForm.validation.email,
     }),
     password: z.string().min(8, {
-      message: t.validation.password,
+      message: t.loginForm.validation.password,
     }),
   });
 
@@ -61,20 +61,26 @@ export function LoginForm({ dictionary: t, lang }: { dictionary: Dictionary, lan
       const userCredential = await signInWithEmailAndPassword(auth, values.email, values.password);
 
       try {
-        await getUserById(userCredential.user.uid);
-        router.push(`/${lang}/account`);
+        const user = await getUserById(userCredential.user.uid);
+        if (user.tipo.toLowerCase() === 'administrador') {
+          router.push(`/${lang}/dashboard/admin`);
+        } else if (user.tipo.toLowerCase() === 'consumidor') {
+          router.push(`/${lang}/dashboard/consumer`);
+        } else {
+          router.push(`/${lang}/unauthorized`);
+        }
       } catch (backendError) {
         await signOut(auth);
         toast({
-          title: t.toast.error.title,
-          description: t.toast.error.description, 
+          title: t.loginForm.toast.error.title,
+          description: t.loginForm.toast.error.description, 
           variant: "destructive",
         });
       }
     } catch (authError) {
       toast({
-        title: t.toast.error.title,
-        description: t.toast.error.description,
+        title: t.loginForm.toast.error.title,
+        description: t.loginForm.toast.error.description,
         variant: "destructive",
       });
     } finally {
@@ -87,8 +93,8 @@ export function LoginForm({ dictionary: t, lang }: { dictionary: Dictionary, lan
   return (
     <Card className="w-full max-w-md shadow-2xl">
       <CardHeader className="text-center">
-        <CardTitle className="text-3xl font-headline" role="heading">{t.title}</CardTitle>
-        <CardDescription>{t.description}</CardDescription>
+        <CardTitle className="text-3xl font-headline" role="heading">{t.loginForm.title}</CardTitle>
+        <CardDescription>{t.loginForm.description}</CardDescription>
       </CardHeader>
       <CardContent>
         <Form {...form}>
@@ -98,9 +104,9 @@ export function LoginForm({ dictionary: t, lang }: { dictionary: Dictionary, lan
               name="email"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>{t.email.label}</FormLabel>
+                  <FormLabel>{t.loginForm.email.label}</FormLabel>
                   <FormControl>
-                    <Input placeholder={t.email.placeholder} {...field} />
+                    <Input placeholder={t.loginForm.email.placeholder} {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -111,7 +117,7 @@ export function LoginForm({ dictionary: t, lang }: { dictionary: Dictionary, lan
               name="password"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>{t.password.label}</FormLabel>
+                  <FormLabel>{t.loginForm.password.label}</FormLabel>
                   <FormControl>
                     <Input type="password" placeholder="********" {...field} />
                   </FormControl>
@@ -120,14 +126,14 @@ export function LoginForm({ dictionary: t, lang }: { dictionary: Dictionary, lan
               )}
             />
             <Button type="submit" className="w-full bg-primary text-primary-foreground hover:bg-primary/90" disabled={isLoading}>
-              {isLoading ? 'Cargando...' : t.submit}
+              {isLoading ? 'Cargando...' : t.loginForm.submit}
             </Button>
           </form>
         </Form>
         <p className="mt-6 text-center text-sm text-muted-foreground">
-          {t.noAccount}{" "}
+          {t.loginForm.noAccount}{" "}
           <Link href={`/${lang}/register`} className="font-semibold text-primary hover:underline">
-            {t.signUp}
+            {t.loginForm.signUp}
           </Link>
         </p>
       </CardContent>

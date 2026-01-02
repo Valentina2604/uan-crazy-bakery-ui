@@ -12,7 +12,7 @@ export default async function LoginPage({
 
   return (
     <div className="w-full min-h-[calc(100vh-8rem)] flex items-center justify-center p-4">
-      <LoginForm dictionary={dictionary.loginForm} lang={lang} />
+      <LoginForm dictionary={dictionary} lang={lang} />
     </div>
   );
 }

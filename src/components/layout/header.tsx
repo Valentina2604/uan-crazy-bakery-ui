@@ -12,13 +12,36 @@ import {
 import { Locale } from "../../../i18n-config";
 import LanguageSwitcher from "./language-switcher";
 import { Logo } from "./logo";
-import { useSession } from "@/context/session-provider";
+import { useSession, SessionUser } from "@/context/session-provider";
 import { auth } from "@/lib/firebase";
 import { signOut as firebaseSignOut } from "firebase/auth";
 import { useRouter } from 'next/navigation';
 import { getDictionary } from "@/lib/get-dictionary";
 
 type NavigationDictionary = Awaited<ReturnType<typeof getDictionary>>['navigation'];
+
+// Helper function to determine the account link
+const getAccountLink = (user: SessionUser | null, lang: Locale): string => {
+  // If there is no user or the user object doesn't have a 'tipo' property of type string, default to the unauthorized page which will redirect to login
+  if (!user || typeof user.tipo !== 'string') {
+    return `/${lang}/unauthorized`;
+  }
+
+  // Now we know user.tipo is a string, so we can safely use it
+  const userType = user.tipo.toLowerCase();
+
+  if (userType === 'administrador') {
+    return `/${lang}/dashboard/admin`;
+  }
+
+  if (userType === 'consumidor') {
+    return `/${lang}/dashboard/consumer`;
+  }
+
+  // Fallback for any other unexpected user type
+  return `/${lang}/unauthorized`;
+};
+
 
 export function Header({ lang, dictionary }: { lang: Locale, dictionary: NavigationDictionary }) {
   const { user, loading } = useSession();
@@ -35,6 +58,8 @@ export function Header({ lang, dictionary }: { lang: Locale, dictionary: Navigat
     { href: "/order", label: t.order, icon: ShoppingBasket },
     { href: "/contact", label: t.contact, icon: Mail },
   ];
+
+  const accountLink = getAccountLink(user, lang);
 
   return (
     <header className="bg-card/80 backdrop-blur-sm sticky top-0 z-40 border-b">
@@ -63,7 +88,7 @@ export function Header({ lang, dictionary }: { lang: Locale, dictionary: Navigat
           ) : user ? (
             <>
               <Button asChild variant="ghost">
-                <Link href={`/${lang}/account`}>
+                <Link href={accountLink}>
                   <User className="mr-2 h-5 w-5" />
                   {t.myAccount}
                 </Link>
@@ -126,7 +151,7 @@ export function Header({ lang, dictionary }: { lang: Locale, dictionary: Navigat
                     <>
                        <SheetClose asChild>
                         <Button asChild variant="ghost">
-                          <Link href={`/${lang}/account`}>
+                          <Link href={accountLink}>
                             <User className="mr-2 h-5 w-5" />
                             {t.myAccount}
                           </Link>
