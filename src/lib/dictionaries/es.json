@@ -123,30 +123,34 @@
   },
   "privacy": {
     "title": "Política de Privacidad",
-    "welcome": "Bienvenido a la Política de Privacidad de Crazy Bakery. Esta es una página de marcador de posición. El contenido de la política de privacidad se agregará aquí.",
+    "welcome": "Bienvenido a la política de privacidad de Dulce Manía. Tu privacidad es importante para nosotros.",
     "info": {
       "title": "Información que Recopilamos",
-      "p1": "Podemos recopilar información de identificación personal, como su nombre, dirección de correo electrónico y número de teléfono."
+      "p1": "Recopilamos información que nos proporcionas directamente, como tu nombre, correo electrónico y dirección cuando te registras o realizas un pedido."
     },
-    "use": {
-      "title": "Cómo Usamos Tu Información",
-      "p1": "Usamos la información que recopilamos para operar y mantener nuestro Servicio, para procesar sus pedidos y para comunicarnos con usted."
+    "howWeUse": {
+      "title": "Cómo Usamos tu Información",
+      "p1": "Usamos la información que recopilamos para procesar tus pedidos, comunicarnos contigo y mejorar nuestros servicios."
+    },
+    "sharing": {
+      "title": "Cómo Compartimos tu Información",
+      "p1": "No compartimos tu información personal con terceros, excepto cuando es necesario para completar tu pedido (por ejemplo, con nuestros socios de envío)."
     }
   },
   "terms": {
     "title": "Términos de Servicio",
-    "welcome": "Bienvenido a los Términos de Servicio de Crazy Bakery. Esta es una página de marcador de posición. El contenido de los términos de servicio se agregará aquí.",
-    "agreement": {
-      "title": "1. Acuerdo de los Términos",
-      "p1": "Al acceder o usar el Servicio, usted acepta estar sujeto a estos Términos. Si no está de acuerdo con alguna parte de los términos, entonces no puede acceder al Servicio."
+    "welcome": "Bienvenido a los términos de servicio de Dulce Manía. Al utilizar nuestro sitio web, aceptas estos términos.",
+    "acceptance": {
+      "title": "Aceptación de los Términos",
+      "p1": "Al acceder y utilizar nuestro sitio web, aceptas estar sujeto a estos Términos de Servicio y a nuestra Política de Privacidad."
     },
     "orders": {
-      "title": "2. Pedidos y Pago",
-      "p1": "Todos los pedidos están sujetos a aceptación y disponibilidad. Los precios de nuestros productos están sujetos a cambios sin previo aviso. Nos reservamos el derecho en cualquier momento de modificar o descontinuar el Servicio."
+      "title": "Pedidos y Pagos",
+      "p1": "Todos los pedidos están sujetos a disponibilidad y a nuestra aceptación. Nos reservamos el derecho de rechazar o cancelar un pedido en cualquier momento."
     },
     "intellectualProperty": {
-      "title": "3. Propiedad Intelectual",
-      "p1": "El Servicio and su contenido original, características y funcionalidad son y seguirán siendo propiedad exclusiva de Crazy Bakery y sus licenciantes."
+      "title": "Propiedad Intelectual",
+      "p1": "Todo el contenido de este sitio web, incluyendo texto, gráficos, logotipos e imágenes, es de nuestra propiedad y está protegido por las leyes de derechos de autor."
     }
   },
   "unauthorized": {
@@ -169,6 +173,62 @@
       "users": {
         "title": "Gestionar Usuarios",
         "description": "Ver y gestionar las cuentas de usuario."
+      }
+    }
+  },
+  "adminUsersPage": {
+    "title": "Gestionar Usuarios",
+    "description": "Esta página te permitirá gestionar todos los usuarios del sistema. Podrás añadir, editar y eliminar usuarios.",
+    "breadcrumb": "Volver al Dashboard",
+    "usersTable": {
+      "title": "Usuarios",
+      "totalUsers": "Total de Usuarios: {total}",
+      "searchPlaceholder": "Filtrar por nombre o correo...",
+      "headers": {
+        "name": "Nombre",
+        "email": "Correo Electrónico",
+        "role": "Rol",
+        "actions": "Acciones"
+      },
+      "pagination": {
+        "previous": "Anterior",
+        "next": "Siguiente",
+        "page": "Página {currentPage} de {totalPages}"
+      },
+      "deleteUserDialog": {
+        "title": "¿Eliminar usuario: {userName}?",
+        "description": "Esta acción no se puede deshacer. Esto eliminará permanentemente al usuario y sus datos de nuestros servidores.",
+        "cancel": "Cancelar",
+        "delete": "Eliminar"
+      },
+      "editUser": {
+        "title": "Editar Usuario: {userName}",
+        "form": {
+          "phone": "Teléfono",
+          "address": "Dirección",
+          "department": "Departamento",
+          "city": "Ciudad"
+        },
+        "buttons": {
+          "cancel": "Cancelar",
+          "save": "Guardar Cambios"
+        },
+        "toast": {
+          "success": {
+            "title": "¡Usuario Actualizado!",
+            "description": "El usuario ha sido actualizado exitosamente."
+          },
+          "error": {
+            "title": "Error al Actualizar",
+            "description": "Ocurrió un error inesperado. Por favor, inténtalo de nuevo."
+          }
+        }
+      },
+      "toast": {
+        "success": {
+          "title": "¡Usuario Eliminado!",
+          "description": "El usuario ha sido eliminado exitosamente."
+        }
       }
     }
   },

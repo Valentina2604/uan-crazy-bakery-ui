@@ -171,6 +171,64 @@
       "products": {
         "title": "Manage Products",
         "description": "Add, edit, and remove products from the catalog."
+      },
+      "users": {
+        "title": "Manage Users",
+        "description": "Add, edit, and remove users from the system."
+      }
+    }
+  },
+  "adminUsersPage": {
+    "title": "Manage Users",
+    "description": "This page will allow you to manage all the users in the system. You can add, edit, and delete users.",
+    "usersTable": {
+      "title": "Users",
+      "totalUsers": "Total Users: {total}",
+      "headers": {
+        "name": "Name",
+        "email": "Email",
+        "role": "Role",
+        "actions": "Actions"
+      },
+      "pagination": {
+        "previous": "Previous",
+        "next": "Next",
+        "page": "Page {currentPage} of {totalPages}"
+      },
+      "deleteUserDialog": {
+        "title": "Delete User: {userName}?",
+        "description": "This action cannot be undone. This will permanently delete the user and their data from our servers.",
+        "cancel": "Cancel",
+        "delete": "Delete"
+      },
+      "editUser": {
+        "title": "Edit User",
+        "form": {
+          "phone": "Phone",
+          "address": "Address",
+          "department": "Department",
+          "city": "City"
+        },
+        "buttons": {
+          "cancel": "Cancel",
+          "save": "Save Changes"
+        },
+        "toast": {
+          "success": {
+            "title": "User Updated!",
+            "description": "The user has been successfully updated."
+          },
+          "error": {
+            "title": "Update Error",
+            "description": "An unexpected error occurred. Please try again."
+          }
+        }
+      },
+      "toast": {
+        "success": {
+          "title": "User Deleted!",
+          "description": "The user has been successfully deleted."
+        }
       }
     }
   },
