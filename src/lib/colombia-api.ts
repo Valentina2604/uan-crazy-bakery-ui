@@ -12,7 +12,7 @@ export interface City {
 
 export async function getDepartments(): Promise<Department[]> {
   try {
-    const response = await fetch('https://api-colombia.com/api/v1/Department');
+    const response = await fetch('https://crazy-bakery-bk-835393530868.us-central1.run.app/geografia/departamentos');
     if (!response.ok) {
       throw new Error('Failed to fetch departments');
     }
@@ -29,7 +29,7 @@ export async function getDepartments(): Promise<Department[]> {
 
 export async function getCities(): Promise<City[]> {
   try {
-    const response = await fetch('https://api-colombia.com/api/v1/city');
+    const response = await fetch('https://crazy-bakery-bk-835393530868.us-central1.run.app/geografia/ciudades');
     if (!response.ok) {
       throw new Error('Failed to fetch cities');
     }
