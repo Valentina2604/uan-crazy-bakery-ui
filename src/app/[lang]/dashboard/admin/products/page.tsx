@@ -10,7 +10,8 @@ export default async function ProductsPage({ params: { lang } }: { params: { lan
   const initialProducts = await getProducts();
 
   return (
-    <div className="space-y-6 w-full min-h-[calc(100vh-8rem)] p-4 md:p-8">
+    <div className="w-full min-h-[calc(100vh-8rem)] p-4 md:p-8 flex justify-center">
+      <div className="w-full max-w-7xl space-y-6">
         <Breadcrumb>
             <BreadcrumbList>
                 <BreadcrumbItem>
@@ -24,7 +25,8 @@ export default async function ProductsPage({ params: { lang } }: { params: { lan
                 </BreadcrumbItem>
             </BreadcrumbList>
         </Breadcrumb>
-      <ProductsList dictionary={dictionary} initialProducts={initialProducts} />
+        <ProductsList dictionary={dictionary} initialProducts={initialProducts} />
+      </div>
     </div>
   );
 }
