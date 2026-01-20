@@ -3,6 +3,8 @@ import { User } from './types/user';
 import { CreateTamanoPayload, Tamano, UpdateTamanoPayload } from './types/tamano';
 import { IngredienteTamano } from './types/ingrediente-tamano';
 import { IngredienteTamanoDetalle } from './types/ingrediente-tamano-detalle';
+import { Product } from './types/product';
+import { ProductType } from './types/product-type';
 
 const BASE_URL = 'https://crazy-bakery-bk-835393530868.us-central1.run.app';
 
@@ -20,7 +22,6 @@ export async function getUsers(): Promise<User[]> {
     throw new Error('Failed to fetch users');
   }
 
-  // The API returns the users in the correct format, so we can return them directly.
   return response.json();
 }
 
@@ -55,7 +56,6 @@ export async function getUserById(uid: string) {
   const response = await fetch(`${BASE_URL}/usuarios/${uid}`);
 
   if (!response.ok) {
-    // This will catch 404s and other errors, indicating the user is not in the backend DB.
     throw new Error('User not found in database.');
   }
 
@@ -247,4 +247,130 @@ export async function deleteIngredienteTamano(id: number): Promise<void> {
   if (!response.ok) {
     throw new Error('Failed to delete ingredient grammage');
   }
+}
+
+/**
+ * Creates a new product in the backend database.
+ * @param productData - The product's data for creation.
+ * @returns The response from the server.
+ */
+export async function createProduct(productData: Omit<Product, 'id'>): Promise<Product> {
+  const response = await fetch(`${BASE_URL}/ingredientes`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(productData),
+  });
+
+  if (!response.ok) {
+    const errorData = await response.json();
+    throw new Error(errorData.message || 'An error occurred during product creation.');
+  }
+
+  return response.json();
+}
+
+/**
+ * Fetches all products from the backend.
+ * @returns A promise that resolves to an array of products.
+ */
+export async function getProducts(): Promise<Product[]> {
+  const response = await fetch(`${BASE_URL}/ingredientes`, {
+    cache: 'no-store',
+  });
+
+  if (!response.ok) {
+    console.error('Failed to fetch products');
+    throw new Error('Failed to fetch products');
+  }
+
+  return response.json();
+}
+
+/**
+ * Fetches all product types from the backend.
+ * @returns A promise that resolves to an array of product types.
+ */
+export async function getProductTypes(): Promise<ProductType[]> {
+  const response = await fetch(`${BASE_URL}/tipo-ingredientes`, {
+    cache: 'no-store',
+  });
+
+  if (!response.ok) {
+    console.error('Failed to fetch product types');
+    throw new Error('Failed to fetch product types');
+  }
+
+  return response.json();
+}
+
+/**
+ * Fetches product data from the backend by its ID.
+ * @param id The product's ID.
+ * @returns The product's data from the backend.
+ */
+export async function getProductById(id: number): Promise<Product> {
+  const response = await fetch(`${BASE_URL}/ingredientes/${id}`);
+
+  if (!response.ok) {
+    throw new Error('Product not found in database.');
+  }
+
+  return response.json();
+}
+
+/**
+ * Updates a product in the backend database.
+ * @param id - The ID of the product to update.
+ * @param productData - The product's data to update.
+ * @returns The response from the server.
+ */
+export async function updateProduct(id: number, productData: Partial<Product>): Promise<Product> {
+  const response = await fetch(`${BASE_URL}/ingredientes/${id}`, {
+    method: 'PUT',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(productData),
+  });
+
+  if (!response.ok) {
+    throw new Error('Failed to update product');
+  }
+
+  return response.json();
+}
+
+/**
+ * Deletes a product from the backend database.
+ * @param id - The ID of the product to delete.
+ * @returns The response from the server.
+ */
+export async function deleteProduct(id: number): Promise<void> {
+  const response = await fetch(`${BASE_URL}/ingredientes/${id}`, {
+    method: 'DELETE',
+  });
+
+  if (!response.ok) {
+    throw new Error('Failed to delete product');
+  }
+}
+
+/**
+ * Fetches products by type from the backend.
+ * @param type The type of the products to fetch.
+ * @returns A promise that resolves to an array of products.
+ */
+export async function getProductsByType(type: string): Promise<Product[]> {
+  const response = await fetch(`${BASE_URL}/ingredientes/tipo/${type}`, {
+    cache: 'no-store',
+  });
+
+  if (!response.ok) {
+    console.error(`Failed to fetch products for type ${type}`);
+    throw new Error(`Failed to fetch products for type ${type}`);
+  }
+
+  return response.json();
 }
