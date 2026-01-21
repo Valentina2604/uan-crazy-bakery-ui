@@ -5,5 +5,5 @@ export interface Product {
   nombre: string;
   composicion: string;
   tipoIngrediente: ProductType;
-  valor: number;
+  costoPorGramo: number;
 }
