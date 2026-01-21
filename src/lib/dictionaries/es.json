@@ -238,6 +238,87 @@
       }
     }
   },
+  "adminProductsPage": {
+    "title": "Gestionar Productos",
+    "description": "Esta página te permitirá gestionar todos los productos del sistema. Podrás añadir, editar y eliminar productos.",
+    "breadcrumb": "Volver al Dashboard",
+    "ingredientTypes": {
+      "title": "Tipo de Ingrediente",
+      "all": "Todos"
+    },
+    "productsTable": {
+      "addNewProduct": "Añadir Producto",
+      "title": "Productos",
+      "totalProducts": "Total de Productos: {total}",
+      "searchPlaceholder": "Filtrar por nombre...",
+      "headers": {
+        "name": "Nombre",
+        "composition": "Composición",
+        "type": "Tipo",
+        "value": "Valor",
+        "actions": "Acciones"
+      },
+      "pagination": {
+        "previous": "Anterior",
+        "next": "Siguiente",
+        "page": "Página {currentPage} de {totalPages}"
+      },
+      "actions": {
+        "tooltips": {
+          "edit": "Editar Producto",
+          "delete": "Eliminar Producto"
+        }
+      },
+      "noProducts": "No hay productos para mostrar.",
+      "toast": {
+        "fetchError": "Error al cargar los productos.",
+        "deleteSuccess": "¡Producto Eliminado!",
+        "deleteError": "Error al eliminar el producto."
+      }
+    },
+    "addProductModal": {
+      "title": "Añadir Nuevo Producto",
+      "description": "Completa el formulario para añadir un nuevo producto.",
+      "fields": {
+        "name": "Nombre",
+        "composition": "Composición",
+        "type": "Tipo de Producto",
+        "value": "Valor"
+      },
+      "buttons": {
+        "cancel": "Cancelar",
+        "save": "Guardar"
+      },
+      "notifications": {
+        "success": "¡Producto añadido con éxito!",
+        "error": "Error al añadir el producto. Por favor, inténtalo de nuevo."
+      }
+    },
+    "editProductModal": {
+      "title": "Editar Producto",
+      "description": "Modifica los detalles del producto a continuación.",
+      "buttons": {
+        "cancel": "Cancelar",
+        "save": "Guardar Cambios"
+      },
+      "notifications": {
+        "success": "¡Producto actualizado con éxito!",
+        "error": "Error al actualizar el producto. Por favor, inténtalo de nuevo."
+      }
+    },
+    "deleteProductModal": {
+      "title": "¿Estás seguro de que quieres eliminar el producto \"{productName}\"?",
+      "description": "Esta acción no se puede deshacer. Esto eliminará permanentemente el producto.",
+      "buttons": {
+        "cancel": "Cancelar",
+        "delete": "Eliminar"
+      },
+      "notifications": {
+        "success": "¡Producto eliminado con éxito!",
+        "error": "Error al eliminar el producto. Por favor, inténtalo de nuevo."
+      }
+    }
+  },
   "adminSizesPage": {
     "title": "Gestionar Tamaños",
     "description": "Esta página te permitirá gestionar todos los tamaños para los productos. Podrás añadir, editar y eliminar tamaños.",
@@ -309,7 +390,7 @@
   "addGrammageDialog": {
     "title": "Añadir Gramaje al Tamaño",
     "infoPrefix": "Añadiendo gramaje para:",
-    "ingredientType": "Tipo de Ingrediente",
+    "ingredientType": "Tipo de Producto",
     "selectIngredientType": "Selecciona un tipo",
     "grams": "Gramos (gr)",
     "cancel": "Cancelar",
@@ -322,7 +403,7 @@
   "viewGrammageDialog": {
     "title": "Lista de Gramaje por Tamaño",
     "headers": {
-      "ingredientType": "Tipo Ingrediente",
+      "ingredientType": "Tipo Producto",
       "grams": "Gramaje (gr)",
       "actions": "Acción"
     },

@@ -4,6 +4,7 @@ import type { NextRequest } from 'next/server';
 
 import { i18n } from '../i18n-config';
 
+
 import { match as matchLocale } from '@formatjs/intl-localematcher';
 import Negotiator from 'negotiator';
 
@@ -27,13 +28,13 @@ export function middleware(request: NextRequest) {
   const pathname = request.nextUrl.pathname;
   
   //TODO Habilitar para ejecutar en workspace firebase, recordar comentariar ambiente productivo
-  /*
-  const valorLocal = '%7B%22uid%22%3A%22vQ81bGA34pOxnijOZcT9XBThBOq1%22%2C%22role%22%3A%22administrador%22%7D';
+  
+  const valorLocal = '%7B%22uid%22%3A%22ekKI4oKF06gR0JNkDcfoYNeROpU2%22%2C%22role%22%3A%22administrador%22%7D';
   const sessionCookie = decodeURIComponent(valorLocal);
-  */
+  
   
   //TODO Habilitar para ejecutar en ambiente productivo
-  const sessionCookie = request.cookies.get('session')?.value;
+  //const sessionCookie = request.cookies.get('session')?.value;
   
   const pathnameIsMissingLocale = i18n.locales.every(
     (locale) => !pathname.startsWith(`/${locale}/`) && pathname !== `/${locale}`

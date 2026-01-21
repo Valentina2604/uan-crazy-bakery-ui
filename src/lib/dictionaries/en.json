@@ -238,6 +238,87 @@
       }
     }
   },
+  "adminProductsPage": {
+    "title": "Manage Products",
+    "description": "This page will allow you to manage all the products in the system. You can add, edit, and delete products.",
+    "breadcrumb": "Back to Dashboard",
+    "ingredientTypes": {
+      "title": "Ingredient Type",
+      "all": "All"
+    },
+    "productsTable": {
+      "addNewProduct": "Add Product",
+      "title": "Products",
+      "totalProducts": "Total Products: {total}",
+      "searchPlaceholder": "Filter by name...",
+      "headers": {
+        "name": "Name",
+        "composition": "Composition",
+        "type": "Type",
+        "value": "Value",
+        "actions": "Actions"
+      },
+      "pagination": {
+        "previous": "Previous",
+        "next": "Next",
+        "page": "Page {currentPage} of {totalPages}"
+      },
+      "actions": {
+        "tooltips": {
+          "edit": "Edit Product",
+          "delete": "Delete Product"
+        }
+      },
+      "noProducts": "No products to display.",
+      "toast": {
+        "fetchError": "Failed to fetch products.",
+        "deleteSuccess": "Product Deleted!",
+        "deleteError": "Failed to delete product."
+      }
+    },
+    "addProductModal": {
+      "title": "Add New Product",
+      "description": "Complete the form to add a new product.",
+      "fields": {
+        "name": "Name",
+        "composition": "Composition",
+        "type": "Product Type",
+        "value": "Value"
+      },
+      "buttons": {
+        "cancel": "Cancel",
+        "save": "Save"
+      },
+      "notifications": {
+        "success": "Product added successfully!",
+        "error": "Failed to add product. Please try again."
+      }
+    },
+    "editProductModal": {
+      "title": "Edit Product",
+      "description": "Modify the product details below.",
+      "buttons": {
+        "cancel": "Cancel",
+        "save": "Save Changes"
+      },
+      "notifications": {
+        "success": "Product updated successfully!",
+        "error": "Failed to update product. Please try again."
+      }
+    },
+    "deleteProductModal": {
+      "title": "Are you sure you want to delete the product \"{productName}\"?",
+      "description": "This action cannot be undone. This will permanently delete the product.",
+      "buttons": {
+        "cancel": "Cancel",
+        "delete": "Delete"
+      },
+      "notifications": {
+        "success": "Product deleted successfully!",
+        "error": "Failed to delete product. Please try again."
+      }
+    }
+  },
   "adminSizesPage": {
     "title": "Manage Sizes",
     "description": "This page will allow you to manage all the sizes for the products. You can add, edit, and delete sizes.",
