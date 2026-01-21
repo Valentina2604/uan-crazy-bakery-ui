@@ -38,7 +38,7 @@ const formSchema = z.object({
   nombre: z.string().min(1, 'El nombre es requerido'),
   composicion: z.string().min(1, 'La composición es requerida'),
   tipoIngrediente: z.string().min(1, 'El tipo de ingrediente es requerido'),
-  valor: z.number().min(0, 'El valor debe ser un número positivo'),
+  costoPorGramo: z.number().min(0, 'El valor debe ser un número positivo'),
 });
 
 const productTypes = [
@@ -62,7 +62,7 @@ export default function AddProductDialog({ dictionary, onProductAdded }: AddProd
       nombre: '',
       composicion: '',
       tipoIngrediente: '',
-      valor: 0,
+      costoPorGramo: 0,
     },
   });
 
@@ -140,7 +140,7 @@ export default function AddProductDialog({ dictionary, onProductAdded }: AddProd
                 />
                 <FormField
                     control={form.control}
-                    name="valor"
+                    name="costoPorGramo"
                     render={({ field }) => (
                         <FormItem>
                         <FormLabel>{dictionary.adminProductsPage.addProductModal.fields.value}</FormLabel>

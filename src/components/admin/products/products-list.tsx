@@ -123,7 +123,7 @@ export default function ProductsList({ dictionary, initialProducts }: ProductsLi
                     <TableCell className="font-medium">{product.nombre}</TableCell>
                     <TableCell>{product.composicion}</TableCell>
                     <TableCell>{product.tipoIngrediente}</TableCell>
-                    <TableCell>{product.valor}</TableCell>
+                    <TableCell>{product.costoPorGramo}</TableCell>
                     <TableCell className="text-right">
                         <EditProductDialog dictionary={dictionary} product={product} onProductUpdated={() => fetchProducts(selectedType)} />
                         <AlertDialog>
