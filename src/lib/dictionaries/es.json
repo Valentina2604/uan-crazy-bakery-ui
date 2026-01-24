@@ -438,6 +438,21 @@
     }
   },
   "orderWizard": {
-    "title": "Crea tu Propio Pedido"
+    "title": "Crea tu Propio Pedido",
+    "steps": {
+      "recipeType": "Elige tu Base",
+      "size": "Define el Tamaño",
+      "sponge": "Escoge el Sabor",
+      "filling": "Añade un Relleno",
+      "frosting": "Selecciona la Cobertura",
+      "details": "Personaliza tu Pedido",
+      "shipping": "Información de Envío",
+      "summary": "Confirma tu Pedido"
+    },
+    "buttons": {
+      "next": "Siguiente",
+      "back": "Atrás",
+      "finish": "Finalizar"
+    }
   }
 }

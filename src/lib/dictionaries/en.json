@@ -438,6 +438,21 @@
     }
   },
   "orderWizard": {
-    "title": "Create Your Own Order"
+    "title": "Create Your Own Order",
+    "steps": {
+      "recipeType": "Choose Your Base",
+      "size": "Define the Size",
+      "sponge": "Pick the Flavor",
+      "filling": "Add a Filling",
+      "frosting": "Select the Frosting",
+      "details": "Customize Your Order",
+      "shipping": "Shipping Information",
+      "summary": "Confirm Your Order"
+    },
+    "buttons": {
+      "next": "Next",
+      "back": "Back",
+      "finish": "Finish"
+    }
   }
 }
