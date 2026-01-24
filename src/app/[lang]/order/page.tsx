@@ -9,5 +9,5 @@ export default async function OrderPage({
 }) {
   const dictionary = await getDictionary(lang);
 
-  return <OrderWizardModal lang={lang} dictionary={dictionary.orderWizard} />;
+  return <OrderWizardModal lang={lang} dictionary={dictionary} />;
 }

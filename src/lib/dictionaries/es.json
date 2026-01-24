@@ -449,6 +449,10 @@
       "shipping": "Información de Envío",
       "summary": "Confirma tu Pedido"
     },
+    "recipeTypeDescriptions": {
+      "cake": "Elige esta opción si quieres una torta personalizada.",
+      "cupcake": "Elige esta opción si quieres cupcakes personalizados."
+    },
     "buttons": {
       "next": "Siguiente",
       "back": "Atrás",
