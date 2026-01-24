@@ -436,5 +436,8 @@
         "description": "Gestiona la configuración de tu cuenta y tus preferencias."
       }
     }
+  },
+  "orderWizard": {
+    "title": "Crea tu Propio Pedido"
   }
 }

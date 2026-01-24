@@ -436,5 +436,8 @@
         "description": "Manage your account settings and preferences."
       }
     }
+  },
+  "orderWizard": {
+    "title": "Create Your Own Order"
   }
 }
