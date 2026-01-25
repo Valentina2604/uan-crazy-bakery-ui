@@ -442,7 +442,7 @@
     "steps": {
       "recipeType": "Choose Your Base",
       "size": "Define the Size",
-      "sponge": "Pick the Flavor",
+      "sponge": "Define the flavor",
       "filling": "Add a Filling",
       "frosting": "Select the Frosting",
       "details": "Customize Your Order",

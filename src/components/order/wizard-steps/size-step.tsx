@@ -1,24 +1,23 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { ArrowUpFromLine, Users, Circle } from 'lucide-react';
+import { ArrowUpFromLine, Users, Circle, Loader2 } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { getTamanosByTipoReceta } from '@/lib/apis/tamano-api';
-import { Tamano, TipoReceta } from '@/lib/types/tamano';
+import { Tamano } from '@/lib/types/tamano';
 import { getDictionary } from '@/lib/get-dictionary';
 
 type FullDictionary = Awaited<ReturnType<typeof getDictionary>>;
 
+// 1. Corregir la interfaz para que espere el tipo de dato correcto del componente padre.
 interface SizeStepProps {
-  recipeType: 'cake' | 'cupcake';
+  recipeType: 'TORTA' | 'CUPCAKE';
   selectedSize: Tamano | null;
   onSelect: (size: Tamano) => void;
   dictionary: FullDictionary;
 }
 
-function mapRecipeType(recipeType: 'cake' | 'cupcake'): TipoReceta {
-  return recipeType === 'cake' ? 'TORTA' : 'CUPCAKE';
-}
+// 2. La función de mapeo ya no es necesaria, ya que los datos son consistentes.
 
 export function SizeStep({ recipeType, selectedSize, onSelect, dictionary }: SizeStepProps) {
   const [sizes, setSizes] = useState<Tamano[]>([]);
@@ -27,11 +26,12 @@ export function SizeStep({ recipeType, selectedSize, onSelect, dictionary }: Siz
 
   useEffect(() => {
     async function fetchSizes() {
+      // El useEffect ya se dispara correctamente cuando `recipeType` cambia. 
+      // Ahora, simplemente usamos el valor directo.
       try {
         setIsLoading(true);
         setError(null);
-        const apiRecipeType = mapRecipeType(recipeType);
-        const fetchedSizes = await getTamanosByTipoReceta(apiRecipeType);
+        const fetchedSizes = await getTamanosByTipoReceta(recipeType);
         setSizes(fetchedSizes);
       } catch (err) {
         setError('Error al cargar los tamaños. Por favor, intenta de nuevo.');
@@ -47,11 +47,15 @@ export function SizeStep({ recipeType, selectedSize, onSelect, dictionary }: Siz
   const { sizeDetails } = dictionary.orderWizard;
 
   if (isLoading) {
-    return <p>Cargando tamaños...</p>;
+    return (
+      <div className="flex justify-center items-center h-full min-h-[200px]">
+        <Loader2 className="h-16 w-16 animate-spin text-primary" />
+      </div>
+    );
   }
 
   if (error) {
-    return <p className="text-red-500">{error}</p>;
+    return <p className="text-red-500 text-center">{error}</p>;
   }
 
   return (
@@ -59,7 +63,7 @@ export function SizeStep({ recipeType, selectedSize, onSelect, dictionary }: Siz
       {sizes.map(size => (
         <Card
           key={size.id}
-          className={`cursor-pointer transition-all ${selectedSize?.id === size.id ? 'border-primary ring-2 ring-primary' : 'border-gray-200'}`}
+          className={`cursor-pointer transition-all ${selectedSize?.id === size.id ? 'border-primary ring-2 ring-primary' : 'border-border'}`}
           onClick={() => onSelect(size)}
         >
           <CardHeader>
@@ -67,19 +71,20 @@ export function SizeStep({ recipeType, selectedSize, onSelect, dictionary }: Siz
           </CardHeader>
           <CardContent className="flex flex-col gap-3">
             <div className="flex items-center gap-3">
-              <Users className="h-5 w-5 text-gray-600" />
+              <Users className="h-5 w-5 text-muted-foreground" />
               <span className="font-medium">{sizeDetails.portions}:</span>
               <span>{size.porciones}</span>
             </div>
-            {recipeType === 'cake' && (
+            {/* 3. Actualizar la lógica de renderizado condicional para usar el valor correcto. */}
+            {recipeType === 'TORTA' && (
               <>
                 <div className="flex items-center gap-3">
-                  <ArrowUpFromLine className="h-5 w-5 text-gray-600" />
+                  <ArrowUpFromLine className="h-5 w-5 text-muted-foreground" />
                   <span className="font-medium">{sizeDetails.height}:</span>
                   <span>{size.alto} cm</span>
                 </div>
                 <div className="flex items-center gap-3">
-                  <Circle className="h-5 w-5 text-gray-600" />
+                  <Circle className="h-5 w-5 text-muted-foreground" />
                   <span className="font-medium">{sizeDetails.diameter}:</span>
                   <span>{size.diametro} cm</span>
                 </div>

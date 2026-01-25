@@ -6,4 +6,5 @@ export interface Product {
   composicion: string;
   tipoIngrediente: ProductType;
   costoPorGramo: number;
+  estado?: boolean;
 }

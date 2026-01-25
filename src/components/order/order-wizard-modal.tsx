@@ -14,13 +14,17 @@ import { getDictionary } from '@/lib/get-dictionary';
 import { Button } from '@/components/ui/button';
 import { RecipeTypeStep } from './wizard-steps/recipe-type-step';
 import { SizeStep } from './wizard-steps/size-step';
+import { SpongeStep } from './wizard-steps/sponge-step';
 import { Tamano } from '@/lib/types/tamano';
+import { Product } from '@/lib/types';
 
 type FullDictionary = Awaited<ReturnType<typeof getDictionary>>;
 
+// 1. Usar una interfaz más simple y correcta para el tipo de receta
 interface OrderData {
-  recipeType: 'cake' | 'cupcake' | null;
+  recipeType: { nombre: 'TORTA' | 'CUPCAKE' } | null;
   size: Tamano | null;
+  sponge: Product | null;
 }
 
 export function OrderWizardModal({
@@ -32,7 +36,7 @@ export function OrderWizardModal({
 }) {
   const [isOpen, setIsOpen] = useState(true);
   const [currentStep, setCurrentStep] = useState(0);
-  const [orderData, setOrderData] = useState<OrderData>({ recipeType: null, size: null });
+  const [orderData, setOrderData] = useState<OrderData>({ recipeType: null, size: null, sponge: null });
   const router = useRouter();
 
   const { orderWizard } = dictionary;
@@ -59,12 +63,17 @@ export function OrderWizardModal({
     }
   };
 
-  const handleRecipeTypeSelect = (recipeType: 'cake' | 'cupcake') => {
-    setOrderData({ ...orderData, recipeType, size: null });
+  // 2. Actualizar el manejador para el nuevo tipo de objeto
+  const handleRecipeTypeSelect = (recipeType: { nombre: 'TORTA' | 'CUPCAKE' }) => {
+    setOrderData({ recipeType, size: null, sponge: null });
   };
 
   const handleSizeSelect = (size: Tamano) => {
-    setOrderData({ ...orderData, size });
+    setOrderData({ ...orderData, size, sponge: null });
+  };
+
+  const handleSpongeSelect = (sponge: Product) => {
+    setOrderData({ ...orderData, sponge });
   };
 
   const progress = ((currentStep + 1) / steps.length) * 100;
@@ -83,10 +92,22 @@ export function OrderWizardModal({
         if (!orderData.recipeType) return null;
         return (
           <SizeStep
-            recipeType={orderData.recipeType}
+            // 3. Pasar el nombre directamente
+            recipeType={orderData.recipeType.nombre}
             selectedSize={orderData.size}
             onSelect={handleSizeSelect}
             dictionary={dictionary}
+          />
+        );
+      case 2:
+        if (!orderData.recipeType || !orderData.size) return null;
+        return (
+          <SpongeStep
+            // 3. Pasar el nombre directamente
+            recipeType={orderData.recipeType.nombre}
+            sizeId={orderData.size.id}
+            selectedSponge={orderData.sponge}
+            onSelect={handleSpongeSelect}
           />
         );
       default:
@@ -104,6 +125,8 @@ export function OrderWizardModal({
         return orderData.recipeType === null;
       case 1:
         return orderData.size === null;
+      case 2:
+        return orderData.sponge === null;
       default:
         return false;
     }
