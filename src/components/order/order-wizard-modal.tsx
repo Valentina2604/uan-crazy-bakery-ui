@@ -15,16 +15,18 @@ import { Button } from '@/components/ui/button';
 import { RecipeTypeStep } from './wizard-steps/recipe-type-step';
 import { SizeStep } from './wizard-steps/size-step';
 import { SpongeStep } from './wizard-steps/sponge-step';
+import { FillingStep } from './wizard-steps/filling-step'; // 1. Importar el nuevo componente
 import { Tamano } from '@/lib/types/tamano';
 import { Product } from '@/lib/types';
 
 type FullDictionary = Awaited<ReturnType<typeof getDictionary>>;
 
-// 1. Usar una interfaz más simple y correcta para el tipo de receta
+// 2. Añadir el Relleno a la interfaz de datos de la orden
 interface OrderData {
   recipeType: { nombre: 'TORTA' | 'CUPCAKE' } | null;
   size: Tamano | null;
   sponge: Product | null;
+  filling: Product | null; 
 }
 
 export function OrderWizardModal({
@@ -36,7 +38,8 @@ export function OrderWizardModal({
 }) {
   const [isOpen, setIsOpen] = useState(true);
   const [currentStep, setCurrentStep] = useState(0);
-  const [orderData, setOrderData] = useState<OrderData>({ recipeType: null, size: null, sponge: null });
+  // 2.1. Actualizar el estado inicial para incluir el relleno
+  const [orderData, setOrderData] = useState<OrderData>({ recipeType: null, size: null, sponge: null, filling: null });
   const router = useRouter();
 
   const { orderWizard } = dictionary;
@@ -63,17 +66,22 @@ export function OrderWizardModal({
     }
   };
 
-  // 2. Actualizar el manejador para el nuevo tipo de objeto
+  // 3. Implementar el reseteo de los pasos posteriores
   const handleRecipeTypeSelect = (recipeType: { nombre: 'TORTA' | 'CUPCAKE' }) => {
-    setOrderData({ recipeType, size: null, sponge: null });
+    setOrderData({ recipeType, size: null, sponge: null, filling: null });
   };
 
   const handleSizeSelect = (size: Tamano) => {
-    setOrderData({ ...orderData, size, sponge: null });
+    setOrderData({ ...orderData, size, sponge: null, filling: null });
   };
 
   const handleSpongeSelect = (sponge: Product) => {
-    setOrderData({ ...orderData, sponge });
+    setOrderData({ ...orderData, sponge, filling: null });
+  };
+
+  // 4. Crear el manejador para la selección del relleno
+  const handleFillingSelect = (filling: Product) => {
+    setOrderData({ ...orderData, filling });
   };
 
   const progress = ((currentStep + 1) / steps.length) * 100;
@@ -92,7 +100,6 @@ export function OrderWizardModal({
         if (!orderData.recipeType) return null;
         return (
           <SizeStep
-            // 3. Pasar el nombre directamente
             recipeType={orderData.recipeType.nombre}
             selectedSize={orderData.size}
             onSelect={handleSizeSelect}
@@ -103,11 +110,21 @@ export function OrderWizardModal({
         if (!orderData.recipeType || !orderData.size) return null;
         return (
           <SpongeStep
-            // 3. Pasar el nombre directamente
             recipeType={orderData.recipeType.nombre}
             sizeId={orderData.size.id}
             selectedSponge={orderData.sponge}
             onSelect={handleSpongeSelect}
+          />
+        );
+      // 5. Integrar el nuevo componente FillingStep como el cuarto paso
+      case 3:
+        if (!orderData.recipeType || !orderData.size) return null;
+        return (
+          <FillingStep 
+            recipeType={orderData.recipeType.nombre}
+            sizeId={orderData.size.id}
+            selectedFilling={orderData.filling}
+            onSelect={handleFillingSelect}
           />
         );
       default:
@@ -119,6 +136,7 @@ export function OrderWizardModal({
     }
   };
 
+  // 6. Actualizar la lógica para deshabilitar el botón de "Siguiente"
   const isNextButtonDisabled = () => {
     switch (currentStep) {
       case 0:
@@ -127,6 +145,8 @@ export function OrderWizardModal({
         return orderData.size === null;
       case 2:
         return orderData.sponge === null;
+      case 3:
+        return orderData.filling === null;
       default:
         return false;
     }
