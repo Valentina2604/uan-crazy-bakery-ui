@@ -444,10 +444,24 @@
       "size": "Define el Tamaño",
       "sponge": "Define el sabor",
       "filling": "Añade un Relleno",
-      "frosting": "Selecciona la Cobertura",
-      "details": "Personaliza tu Pedido",
+      "coverage": "Selecciona la Cobertura",
+      "customization": "Personaliza tu Pedido",
       "shipping": "Información de Envío",
       "summary": "Confirma tu Pedido"
+    },
+    "customizationStep": {
+      "title": "¡Hazlo Tuyo!",
+      "description": "Describe la ocasión especial y cualquier idea que tengas para la decoración. ¿Es un cumpleaños, un aniversario? ¿Qué colores, temas o toppings te gustaría ver? Nuestra IA te ayudará a refinar los detalles.",
+      "placeholder": "Ej: Es para el 5º cumpleaños de mi hija. Le encantan los unicornios, el arcoíris y los colores pastel. Me gustaría que tuviera chispas de colores y el nombre 'Sofía' en la parte superior.",
+      "aiButton": "Mejorar con IA",
+      "aiLoading": "Generando ideas...",
+      "generateProposalButton": "Generar Propuesta",
+      "proposalLoading": "Creando propuesta visual...",
+      "proposalPlaceholder": "Aquí aparecerá la propuesta visual de tu pastel una vez que la generes.",
+      "proposalTitle": "Nuestra Propuesta Visual",
+      "proposalError": "No se pudo generar la propuesta. Por favor, intenta de nuevo.",
+      "retry": "Reintentar",
+      "acceptProposal": "Acepto la propuesta visual para mi pastel"
     },
     "recipeTypeDescriptions": {
       "cake": "Elige esta opción si quieres una torta personalizada.",

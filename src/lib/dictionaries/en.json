@@ -150,7 +150,7 @@
     },
     "intellectualProperty": {
       "title": "Intellectual Property",
-      "p1": "All content on this-website, including text, graphics, logos, and images, is our property and is protected by copyright laws."
+      "p1": "All content on this website, including text, graphics, logos, and images, is our property and is protected by copyright laws."
     }
   },
   "unauthorized": {
@@ -442,12 +442,26 @@
     "steps": {
       "recipeType": "Choose Your Base",
       "size": "Define the Size",
-      "sponge": "Define the flavor",
+      "sponge": "Define the Flavor",
       "filling": "Add a Filling",
-      "frosting": "Select the Frosting",
-      "details": "Customize Your Order",
+      "coverage": "Select the Coverage",
+      "customization": "Customize Your Order",
       "shipping": "Shipping Information",
       "summary": "Confirm Your Order"
+    },
+    "customizationStep": {
+      "title": "Make It Yours!",
+      "description": "Describe the special occasion and any ideas you have for the decoration. Is it a birthday, an anniversary? What colors, themes, or toppings would you like to see? Our AI will help you refine the details.",
+      "placeholder": "e.g., It's for my daughter's 5th birthday. She loves unicorns, rainbows, and pastel colors. I'd like it to have colorful sprinkles and the name 'Sophia' on top.",
+      "aiButton": "Enhance with AI",
+      "aiLoading": "Generating ideas...",
+      "generateProposalButton": "Generate Proposal",
+      "proposalLoading": "Creating visual proposal...",
+      "proposalPlaceholder": "The visual proposal for your cake will appear here once you generate it.",
+      "proposalTitle": "Our Visual Proposal",
+      "proposalError": "Could not generate the proposal. Please try again.",
+      "retry": "Retry",
+      "acceptProposal": "I accept the visual proposal for my cake"
     },
     "recipeTypeDescriptions": {
       "cake": "Choose this option if you want a custom cake.",

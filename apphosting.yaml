@@ -1,4 +1,10 @@
 run: npm run start
 env:
   - variable: NEXT_PUBLIC_FIREBASE_API_KEY
-    value: AIzaSyAm95tZq9GX-MOg23OUo2fQrXFwhy8CFcU
+    secret: NEXT_PUBLIC_FIREBASE_API_KEY
+  - variable: OPENAI_API_KEY
+    secret: OPENAI_API_KEY
+build:
+  env:
+    - variable: OPENAI_API_KEY
+      secret: OPENAI_API_KEY
