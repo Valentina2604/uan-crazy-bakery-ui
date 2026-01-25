@@ -453,6 +453,11 @@
       "cake": "Elige esta opción si quieres una torta personalizada.",
       "cupcake": "Elige esta opción si quieres cupcakes personalizados."
     },
+    "sizeDetails": {
+      "portions": "Porciones",
+      "height": "Alto",
+      "diameter": "Diámetro"
+    },
     "buttons": {
       "next": "Siguiente",
       "back": "Atrás",

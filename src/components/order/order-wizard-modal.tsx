@@ -13,11 +13,14 @@ import { Locale } from '../../../i18n-config';
 import { getDictionary } from '@/lib/get-dictionary';
 import { Button } from '@/components/ui/button';
 import { RecipeTypeStep } from './wizard-steps/recipe-type-step';
+import { SizeStep } from './wizard-steps/size-step';
+import { Tamano } from '@/lib/types/tamano';
 
 type FullDictionary = Awaited<ReturnType<typeof getDictionary>>;
 
 interface OrderData {
   recipeType: 'cake' | 'cupcake' | null;
+  size: Tamano | null;
 }
 
 export function OrderWizardModal({
@@ -29,7 +32,7 @@ export function OrderWizardModal({
 }) {
   const [isOpen, setIsOpen] = useState(true);
   const [currentStep, setCurrentStep] = useState(0);
-  const [orderData, setOrderData] = useState<OrderData>({ recipeType: null });
+  const [orderData, setOrderData] = useState<OrderData>({ recipeType: null, size: null });
   const router = useRouter();
 
   const { orderWizard } = dictionary;
@@ -57,7 +60,11 @@ export function OrderWizardModal({
   };
 
   const handleRecipeTypeSelect = (recipeType: 'cake' | 'cupcake') => {
-    setOrderData({ ...orderData, recipeType });
+    setOrderData({ ...orderData, recipeType, size: null });
+  };
+
+  const handleSizeSelect = (size: Tamano) => {
+    setOrderData({ ...orderData, size });
   };
 
   const progress = ((currentStep + 1) / steps.length) * 100;
@@ -70,6 +77,16 @@ export function OrderWizardModal({
             dictionary={dictionary}
             onSelect={handleRecipeTypeSelect}
             selectedRecipeType={orderData.recipeType}
+          />
+        );
+      case 1:
+        if (!orderData.recipeType) return null;
+        return (
+          <SizeStep
+            recipeType={orderData.recipeType}
+            selectedSize={orderData.size}
+            onSelect={handleSizeSelect}
+            dictionary={dictionary}
           />
         );
       default:
@@ -85,6 +102,8 @@ export function OrderWizardModal({
     switch (currentStep) {
       case 0:
         return orderData.recipeType === null;
+      case 1:
+        return orderData.size === null;
       default:
         return false;
     }
@@ -120,7 +139,7 @@ export function OrderWizardModal({
               {orderWizard.buttons.next}
             </Button>
           ) : (
-            <Button onClick={() => alert('Finalizar pedido')}>
+            <Button onClick={() => alert(JSON.stringify(orderData, null, 2))}>
               {orderWizard.buttons.finish}
             </Button>
           )}
