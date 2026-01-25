@@ -17,8 +17,14 @@ import { SizeStep } from './wizard-steps/size-step';
 import { SpongeStep } from './wizard-steps/sponge-step';
 import { FillingStep } from './wizard-steps/filling-step';
 import { CoverageStep } from './wizard-steps/coverage-step';
+import { CustomizationStep } from './wizard-steps/customization-step';
 import { Tamano } from '@/lib/types/tamano';
 import { Product } from '@/lib/types';
+
+export interface ImageProposalResponse {
+  prompt: string;
+  imageUrl: string;
+}
 
 type FullDictionary = Awaited<ReturnType<typeof getDictionary>>;
 
@@ -28,6 +34,8 @@ interface OrderData {
   sponge: Product | null;
   filling: Product | null;
   coverage: Product | null;
+  customization: string | null;
+  imageProposalData: ImageProposalResponse | null;
 }
 
 export function OrderWizardModal({
@@ -45,7 +53,10 @@ export function OrderWizardModal({
     sponge: null,
     filling: null,
     coverage: null,
+    customization: null,
+    imageProposalData: null,
   });
+  const [isAILoading, setIsAILoading] = useState(false);
   const router = useRouter();
 
   const { orderWizard } = dictionary;
@@ -62,57 +73,98 @@ export function OrderWizardModal({
       setCurrentStep(currentStep - 1);
     }
   };
-
+  
   const handleOpenChange = (open: boolean) => {
     if (!open) {
       setIsOpen(false);
-      setTimeout(() => {
-        router.push(`/${lang}`);
-      }, 200);
+      setTimeout(() => router.push(`/${lang}`), 200);
     }
   };
 
+  const resetSubsequentSteps = () => ({
+    size: null, sponge: null, filling: null, coverage: null, customization: null, imageProposalData: null
+  });
+
   const handleRecipeTypeSelect = (recipeType: { nombre: 'TORTA' | 'CUPCAKE' }) => {
-    setOrderData({ recipeType, size: null, sponge: null, filling: null, coverage: null });
+    setOrderData({ recipeType, ...resetSubsequentSteps() });
   };
 
   const handleSizeSelect = (size: Tamano) => {
-    setOrderData({ ...orderData, size, sponge: null, filling: null, coverage: null });
+    setOrderData({ ...orderData, size, sponge: null, filling: null, coverage: null, customization: null, imageProposalData: null });
   };
 
   const handleSpongeSelect = (sponge: Product) => {
-    setOrderData({ ...orderData, sponge, filling: null, coverage: null });
+    setOrderData({ ...orderData, sponge, filling: null, coverage: null, customization: null, imageProposalData: null });
   };
 
   const handleFillingSelect = (filling: Product) => {
-    setOrderData({ ...orderData, filling, coverage: null });
+    setOrderData({ ...orderData, filling, coverage: null, customization: null, imageProposalData: null });
   };
 
   const handleCoverageSelect = (coverage: Product) => {
-    setOrderData({ ...orderData, coverage });
+    setOrderData({ ...orderData, coverage, customization: null, imageProposalData: null });
+  };
+
+  const handleCustomizationChange = (value: string) => {
+    setOrderData({ ...orderData, customization: value, imageProposalData: null });
+  };
+
+  const handleProposalChange = (proposal: ImageProposalResponse | null) => {
+    setOrderData(prev => ({ ...prev, imageProposalData: proposal }));
+  };
+
+  const handleEnhanceWithAI = async () => {
+    setIsAILoading(true);
+    setOrderData(prev => ({ ...prev, imageProposalData: null }));
+    const initialText = orderData.customization;
+    setOrderData(prev => ({ ...prev, customization: '' }));
+
+    const response = await fetch('/api/generate-suggestion', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ orderData: orderData, customizationText: initialText }),
+    });
+
+    if (!response.ok || !response.body) {
+      setIsAILoading(false);
+      setOrderData(prev => ({ ...prev, customization: initialText }));
+      return;
+    }
+
+    const reader = response.body.getReader();
+    const decoder = new TextDecoder();
+    let fullText = '';
+    while (true) {
+        const { value, done } = await reader.read();
+        if (done) break;
+        const chunkValue = decoder.decode(value);
+        fullText += chunkValue;
+        setOrderData(prev => ({ ...prev, customization: fullText }));
+    }
+    setIsAILoading(false);
   };
 
   const progress = ((currentStep + 1) / steps.length) * 100;
 
   const renderStepContent = () => {
+    if (currentStep > 4 && (!orderData.recipeType || !orderData.size)) return null;
+
     switch (currentStep) {
-      case 0:
-        return <RecipeTypeStep dictionary={dictionary} onSelect={handleRecipeTypeSelect} selectedRecipeType={orderData.recipeType} />;
-      case 1:
-        if (!orderData.recipeType) return null;
-        return <SizeStep recipeType={orderData.recipeType.nombre} selectedSize={orderData.size} onSelect={handleSizeSelect} dictionary={dictionary} />;
-      case 2:
-        if (!orderData.recipeType || !orderData.size) return null;
-        return <SpongeStep recipeType={orderData.recipeType.nombre} sizeId={orderData.size.id} selectedSponge={orderData.sponge} onSelect={handleSpongeSelect} />;
-      case 3:
-        if (!orderData.recipeType || !orderData.size) return null;
-        return <FillingStep recipeType={orderData.recipeType.nombre} sizeId={orderData.size.id} selectedFilling={orderData.filling} onSelect={handleFillingSelect} />;
-      case 4:
-        if (!orderData.recipeType || !orderData.size) return null;
-        // La corrección del error de tipeo está aquí
-        return <CoverageStep recipeType={orderData.recipeType.nombre} sizeId={orderData.size.id} selectedCoverage={orderData.coverage} onSelect={handleCoverageSelect} />;
-      default:
-        return <div className="border-2 border-dashed border-gray-300 rounded-lg h-full p-4"><p>Contenido del paso ''{steps[currentStep]}'' irá aquí.</p></div>;
+      case 0: return <RecipeTypeStep dictionary={dictionary} onSelect={handleRecipeTypeSelect} selectedRecipeType={orderData.recipeType} />;
+      case 1: return <SizeStep recipeType={orderData.recipeType!.nombre} selectedSize={orderData.size} onSelect={handleSizeSelect} dictionary={dictionary} />;
+      case 2: return <SpongeStep recipeType={orderData.recipeType!.nombre} sizeId={orderData.size!.id} selectedSponge={orderData.sponge} onSelect={handleSpongeSelect} />;
+      case 3: return <FillingStep recipeType={orderData.recipeType!.nombre} sizeId={orderData.size!.id} selectedFilling={orderData.filling} onSelect={handleFillingSelect} />;
+      case 4: return <CoverageStep recipeType={orderData.recipeType!.nombre} sizeId={orderData.size!.id} selectedCoverage={orderData.coverage} onSelect={handleCoverageSelect} />;
+      case 5: 
+        return <CustomizationStep 
+                  dictionary={dictionary} 
+                  orderData={orderData}
+                  onValueChange={handleCustomizationChange}
+                  onEnhanceWithAI={handleEnhanceWithAI}
+                  isAILoading={isAILoading}
+                  onProposalChange={handleProposalChange}
+                />;
+      default: return null;
     }
   };
 
@@ -123,27 +175,21 @@ export function OrderWizardModal({
       case 2: return orderData.sponge === null;
       case 3: return orderData.filling === null;
       case 4: return orderData.coverage === null;
+      case 5: return !orderData.customization || !orderData.imageProposalData;
       default: return false;
     }
   };
 
   const handleFinish = () => {
-    console.log("Order Data:", JSON.stringify(orderData, null, 2));
+    console.log("Final Order Data (with full image proposal):", JSON.stringify(orderData, null, 2));
   };
 
   return (
     <Dialog open={isOpen} onOpenChange={handleOpenChange}>
       <DialogContent className="max-w-4xl h-[90vh] flex flex-col" onInteractOutside={(e) => e.preventDefault()}>
-        <DialogHeader>
-          <DialogTitle>{orderWizard.title}</DialogTitle>
-        </DialogHeader>
-        <div className="w-full bg-gray-200 rounded-full h-2.5 mb-4">
-          <div className="bg-primary h-2.5 rounded-full transition-all duration-500" style={{ width: `${progress}%` }}></div>
-        </div>
-        <div className="flex-grow py-4 overflow-y-auto">
-          <h2 className="text-xl font-semibold mb-4">{steps[currentStep]}</h2>
-          {renderStepContent()}
-        </div>
+        <DialogHeader><DialogTitle>{orderWizard.title}</DialogTitle></DialogHeader>
+        <div className="w-full bg-gray-200 rounded-full h-2.5 mb-4"><div className="bg-primary h-2.5 rounded-full transition-all duration-500" style={{ width: `${progress}%` }}></div></div>
+        <div className="flex-grow py-4 overflow-y-auto"><h2 className="text-xl font-semibold mb-4">{steps[currentStep]}</h2>{renderStepContent()}</div>
         <DialogFooter className="mt-4">
           {currentStep > 0 && <Button variant="outline" onClick={handleBack}>{orderWizard.buttons.back}</Button>}
           {currentStep < steps.length - 1 ? (
