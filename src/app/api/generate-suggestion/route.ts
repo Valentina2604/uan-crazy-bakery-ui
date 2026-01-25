@@ -1,5 +1,7 @@
 import OpenAI from 'openai';
-import { streamText } from 'ai';
+
+// NOTE: We are deliberately NOT using any helpers from the 'ai' package
+// to avoid version incompatibility issues. We will build the stream manually.
 
 const openai = new OpenAI();
 
@@ -33,49 +35,56 @@ function buildPrompt(orderData: any, customizationText: string): string {
 }
 
 export async function POST(req: Request) {
-  // --- LOG DE DIAGNÓSTICO 1: VERIFICACIÓN DE LA CLAVE API ---
-  console.log('--- Iniciando la generación de sugerencia de IA ---');
-  if (process.env.OPENAI_API_KEY) {
-    console.log('Clave de API de OpenAI encontrada en las variables de entorno.');
-  } else {
+  console.log('--- Iniciando la generación de sugerencia de IA (método manual y robusto) ---');
+  if (!process.env.OPENAI_API_KEY) {
     console.error('¡Error Crítico! La variable de entorno OPENAI_API_KEY no está configurada.');
-    // Detenemos la ejecución si la clave no está para evitar un error inevitable
     return new Response('Error de configuración del servidor: la clave de API no está disponible.', { status: 500 });
   }
 
-  const { orderData, customizationText } = await req.json();
-
-  if (!orderData || !customizationText) {
-    return new Response('Faltan datos en la solicitud', { status: 400 });
-  }
-
-  const prompt = buildPrompt(orderData, customizationText);
-
   try {
-    const result = await streamText({
-      model: openai.chat(process.env.OPENAI_API_MODEL || 'gpt-4-turbo-2024-04-09'),
-      system: prompt,
-      prompt: customizationText,
-    });
+    const { orderData, customizationText } = await req.json();
 
-    return result.toAIStreamResponse();
-
-  } catch (error) {
-    // --- LOG DE DIAGNÓSTICO 2: ERROR DETALLADO DE LA API ---
-    console.error('\n--- ¡Error Detallado al llamar a la API de OpenAI! ---\n');
-    
-    // Imprimimos el objeto de error completo para obtener todos los detalles
-    console.error(error);
-    
-    let errorMessage = 'Error interno al generar la sugerencia de la IA.';
-    let errorStatus = 500;
-
-    // Si el error es una instancia de APIError de OpenAI, podemos ser más específicos
-    if (error instanceof OpenAI.APIError) {
-        errorMessage = `Error de la API de OpenAI: ${error.message}`;
-        errorStatus = error.status || 500;
+    if (!orderData || !customizationText) {
+      return new Response('Faltan datos en la solicitud', { status: 400 });
     }
 
-    return new Response(errorMessage, { status: errorStatus });
+    const systemPrompt = buildPrompt(orderData, customizationText);
+
+    // 1. Call the OpenAI API directly, requesting a stream
+    const openaiResponse = await openai.chat.completions.create({
+      model: process.env.OPENAI_API_MODEL || 'gpt-4-turbo',
+      stream: true,
+      messages: [
+        { role: 'system', content: systemPrompt },
+        { role: 'user', content: customizationText },
+      ],
+    });
+
+    // 2. Create a standard ReadableStream to send to the client
+    const stream = new ReadableStream({
+      async start(controller) {
+        const encoder = new TextEncoder();
+        // Iterate over each chunk as it arrives from OpenAI
+        for await (const chunk of openaiResponse) {
+          const text = chunk.choices[0]?.delta?.content || '';
+          if (text) {
+            // Send the text chunk to the client
+            controller.enqueue(encoder.encode(text));
+          }
+        }
+        // Close the stream when OpenAI is done
+        controller.close();
+      },
+    });
+
+    // 3. Return a standard Response with the stream
+    return new Response(stream, {
+      headers: { 'Content-Type': 'text/plain; charset=utf-8' },
+    });
+
+  } catch (error: any) {
+    console.error('\n--- ¡Error Detallado al llamar a la API de OpenAI! ---\n');
+    console.error(error);
+    return new Response(`Error interno al generar la sugerencia: ${error.message}` , { status: 500 });
   }
 }

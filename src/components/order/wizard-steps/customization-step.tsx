@@ -19,7 +19,7 @@ interface CustomizationStepProps {
     filling: { nombre: string } | null;
     coverage: { nombre: string } | null;
     customization: string | null;
-    imageProposalData: ImageProposalResponse | null;
+    imageProposalData: ImageProposalResponse | null; // This is the ACCEPTED proposal from the parent
   };
   onValueChange: (value: string) => void;
   onProposalChange: (proposal: ImageProposalResponse | null) => void;
@@ -31,15 +31,16 @@ export const CustomizationStep = ({
   dictionary,
   orderData,
   onValueChange,
-  onProposalChange,
+  onProposalChange, // This function updates the ACCEPTED proposal in the parent
   onEnhanceWithAI,
   isAILoading,
 }: CustomizationStepProps) => {
   const [customizationText, setCustomizationText] = useState(orderData.customization || '');
   const [isGenerating, setIsGenerating] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  
-  // When the parent's text changes (e.g., by AI), update the local state.
+  // State to hold the most recently GENERATED proposal, before it's accepted.
+  const [generatedProposal, setGeneratedProposal] = useState<ImageProposalResponse | null>(null);
+
   useEffect(() => {
     setCustomizationText(orderData.customization || '');
   }, [orderData.customization]);
@@ -55,14 +56,13 @@ export const CustomizationStep = ({
   const handleGenerateProposal = async () => {
     setIsGenerating(true);
     setError(null);
-    onProposalChange(null); // Clear any previous proposal
+    setGeneratedProposal(null); // Clear local generated proposal
+    onProposalChange(null);     // Clear any previously ACCEPTED proposal in the parent
 
     try {
       const response = await generateCustomCakeImage(orderData);
-      // A new proposal is not considered "accepted" until the user checks the box.
-      // For simplicity in this flow, we'll hold it locally until accepted.
-      // This means if they navigate away before accepting, it will be lost, which is acceptable.
-      onProposalChange(response); // Directly update the parent state
+      // **FIX**: Store the new proposal locally instead of sending it to the parent immediately.
+      setGeneratedProposal(response);
     } catch (err: any) {
       setError(customizationStep.proposalError);
     } finally {
@@ -70,22 +70,20 @@ export const CustomizationStep = ({
     }
   };
 
-  // The checkbox is now the single source of truth for acceptance.
-  const handleAcceptanceChange = (accepted: boolean) => {
-    if (!accepted) {
-      // If the user unchecks the box, we nullify the proposal in the parent.
+  // This is what should be displayed: the newly generated one, or the one already accepted from the parent.
+  const displayProposal = generatedProposal || orderData.imageProposalData;
+  // The accepted status is ALWAYS driven by the parent state.
+  const isAccepted = orderData.imageProposalData !== null;
+
+  const handleAcceptanceChange = (checked: boolean | 'indeterminate') => {
+    if (checked && displayProposal) {
+      // User accepts: promote the currently displayed proposal to the parent.
+      onProposalChange(displayProposal);
+    } else {
+      // User un-accepts: clear the accepted proposal in the parent.
       onProposalChange(null);
     }
-    // If they check it, the proposal is already in the parent state from generation,
-    // so we don't need to do anything. The button enablement logic will just work.
-    // Let's re-evaluate. The parent state should reflect the accepted state.
-    // A better approach:
-    // When unchecking, we need to nullify. What about re-checking? The data is gone.
-    // The current parent implementation is better: imageProposalData IS the accepted proposal.
   };
-
-  const proposalData = orderData.imageProposalData;
-  const isAccepted = proposalData !== null;
 
   return (
     <div className="flex flex-col gap-6">
@@ -139,12 +137,12 @@ export const CustomizationStep = ({
             <p>{error}</p>
             <Button onClick={handleGenerateProposal} variant="outline" size="sm">{customizationStep.retry}</Button>
           </div>
-        ) : proposalData?.imageUrl ? (
+        ) : displayProposal?.imageUrl ? (
           <div className="flex flex-col items-center gap-4 w-full">
             <h4 className="font-semibold text-lg">{customizationStep.proposalTitle}</h4>
-            <Image src={proposalData.imageUrl} alt="Propuesta de pastel" width={300} height={300} className="rounded-lg border" />
+            <Image src={displayProposal.imageUrl} alt="Propuesta de pastel" width={300} height={300} className="rounded-lg border" />
             <div className="flex items-center space-x-2 bg-gray-100 p-3 rounded-lg">
-              <Checkbox id="proposal-accepted" checked={isAccepted} onCheckedChange={(checked) => onProposalChange(checked ? proposalData : null)} />
+              <Checkbox id="proposal-accepted" checked={isAccepted} onCheckedChange={handleAcceptanceChange} />
               <label htmlFor="proposal-accepted" className="text-sm font-medium leading-none">{customizationStep.acceptProposal}</label>
             </div>
           </div>

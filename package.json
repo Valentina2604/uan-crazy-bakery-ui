@@ -14,6 +14,7 @@
     "test:ci": "jest --ci --runInBand"
   },
   "dependencies": {
+    "@ai-sdk/openai": "^3.0.18",
     "@formatjs/intl-localematcher": "^0.5.4",
     "@genkit-ai/google-genai": "^1.20.0",
     "@genkit-ai/next": "^1.20.0",

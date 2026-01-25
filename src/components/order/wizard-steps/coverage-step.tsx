@@ -37,7 +37,15 @@ export const CoverageStep = ({
           sizeId.toString(),
           'COBERTURA'
         );
-        setCoverages(Array.isArray(data) ? data : []);
+        
+        if (Array.isArray(data)) {
+          // Deduplicate the array based on the item id
+          const uniqueCoverages = Array.from(new Map(data.map(item => [item.id, item])).values());
+          setCoverages(uniqueCoverages);
+        } else {
+          setCoverages([]);
+        }
+
         setError(null);
       } catch (err) {
         setError('Failed to load coverages. Please try again later.');
