@@ -1,3 +1,4 @@
+
 {
   "navigation": {
     "home": "Inicio",
@@ -463,6 +464,19 @@
       "retry": "Reintentar",
       "acceptProposal": "Acepto la propuesta visual para mi pastel"
     },
+    "shippingStep": {
+      "fullName": "Nombre Completo",
+      "email": "Email",
+      "phone": "Teléfono",
+      "phonePlaceholder": "Tu número de teléfono",
+      "address": "Dirección",
+      "addressPlaceholder": "Ej: Calle 5 # 10-15, Apto 201",
+      "department": "Departamento",
+      "departmentPlaceholder": "Selecciona un departamento",
+      "city": "Ciudad",
+      "cityPlaceholder": "Selecciona una ciudad",
+      "updateError": "No se pudo actualizar la información. Inténtalo de nuevo."
+    },
     "recipeTypeDescriptions": {
       "cake": "Elige esta opción si quieres una torta personalizada.",
       "cupcake": "Elige esta opción si quieres cupcakes personalizados."
@@ -475,7 +489,8 @@
     "buttons": {
       "next": "Siguiente",
       "back": "Atrás",
-      "finish": "Finalizar"
+      "finish": "Finalizar",
+      "saving": "Guardando..."
     }
   }
 }

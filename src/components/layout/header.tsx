@@ -1,7 +1,5 @@
-'use client';
-
 import Link from "next/link";
-import { Home, LogIn, Mail, ShoppingBasket, Menu, User, LogOut } from "lucide-react";
+import { Home, Mail, ShoppingBasket, Menu } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   Sheet,
@@ -12,68 +10,17 @@ import {
 import { Locale } from "../../../i18n-config";
 import LanguageSwitcher from "./language-switcher";
 import { Logo } from "./logo";
-import { useSession, SessionUser } from "@/context/session-provider";
-import { auth } from "@/lib/firebase";
-import { signOut as firebaseSignOut } from "firebase/auth";
-import { useRouter } from 'next/navigation';
 import { getDictionary } from "@/lib/get-dictionary";
+import { AuthButtons } from "./auth-buttons";
 
-type NavigationDictionary = Awaited<ReturnType<typeof getDictionary>>['navigation'];
-
-// Helper function to determine the account link
-const getAccountLink = (user: SessionUser | null, lang: Locale): string => {
-  // If there is no user or the user object doesn't have a 'tipo' property of type string, default to the unauthorized page which will redirect to login
-  if (!user || typeof user.tipo !== 'string') {
-    return `/${lang}/unauthorized`;
-  }
-
-  // Now we know user.tipo is a string, so we can safely use it
-  const userType = user.tipo.toLowerCase();
-
-  if (userType === 'administrador') {
-    return `/${lang}/dashboard/admin`;
-  }
-
-  if (userType === 'consumidor') {
-    return `/${lang}/dashboard/consumer`;
-  }
-
-  // Fallback for any other unexpected user type
-  return `/${lang}/unauthorized`;
-};
-
-
-export function Header({ lang, dictionary }: { lang: Locale, dictionary: NavigationDictionary }) {
-  const { user, loading } = useSession();
-  const router = useRouter();
-  const t = dictionary;
-
-  const handleLogout = async () => {
-    // Call the logout API route to clear the session cookie
-    try {
-      await fetch('/api/auth/logout', {
-        method: 'POST',
-      });
-    } catch (error) {
-      console.error("Failed to logout from API", error);
-      // Even if API call fails, proceed with Firebase sign out and redirection
-    } finally {
-      // Sign out from Firebase
-      await firebaseSignOut(auth);
-      // Redirect to home page
-      router.push(`/${lang}`);
-      // Force a reload to ensure all state is cleared
-      router.refresh();
-    }
-  };
+export async function Header({ lang }: { lang: Locale }) {
+  const { navigation: t } = await getDictionary(lang);
 
   const navItems = [
     { href: "/", label: t.home, icon: Home },
     { href: "/order", label: t.order, icon: ShoppingBasket },
     { href: "/contact", label: t.contact, icon: Mail },
   ];
-
-  const accountLink = getAccountLink(user, lang);
 
   return (
     <header className="bg-card/80 backdrop-blur-sm sticky top-0 z-40 border-b">
@@ -97,37 +44,7 @@ export function Header({ lang, dictionary }: { lang: Locale, dictionary: Navigat
         </nav>
         <div className="hidden items-center gap-2 md:flex">
           <LanguageSwitcher lang={lang} />
-          {loading ? (
-            <div className="h-10 w-40 animate-pulse rounded-md bg-muted" />
-          ) : user ? (
-            <>
-              <Button asChild variant="ghost">
-                <Link href={accountLink}>
-                  <User className="mr-2 h-5 w-5" />
-                  {t.myAccount}
-                </Link>
-              </Button>
-              <Button onClick={handleLogout} variant="outline">
-                 <LogOut className="mr-2 h-5 w-5" />
-                 {t.logout}
-              </Button>
-            </>
-          ) : (
-            <>
-              <Button asChild variant="ghost">
-                <Link href={`/${lang}/login`}>
-                  <LogIn className="mr-2 h-5 w-5" />
-                  {t.login}
-                </Link>
-              </Button>
-              <Button
-                asChild
-                className="bg-primary text-primary-foreground hover:bg-primary/90"
-              >
-                <Link href={`/${lang}/register`}>{t.signUp}</Link>
-              </Button>
-            </>
-          )}
+          <AuthButtons lang={lang} dictionary={t} />
         </div>
         <div className="md:hidden flex items-center gap-2">
           <LanguageSwitcher lang={lang} />
@@ -159,45 +76,7 @@ export function Header({ lang, dictionary }: { lang: Locale, dictionary: Navigat
                 ))}
                 <hr className="my-4" />
                 <div className="flex flex-col gap-4">
-                  {loading ? (
-                     <div className="h-10 w-full animate-pulse rounded-md bg-muted" />
-                  ): user ? (
-                    <>
-                       <SheetClose asChild>
-                        <Button asChild variant="ghost">
-                          <Link href={accountLink}>
-                            <User className="mr-2 h-5 w-5" />
-                            {t.myAccount}
-                          </Link>
-                        </Button>
-                      </SheetClose>
-                      <SheetClose asChild>
-                         <Button onClick={handleLogout} variant="outline">
-                           <LogOut className="mr-2 h-5 w-5" />
-                           {t.logout}
-                        </Button>
-                      </SheetClose>
-                    </>
-                  ) : (
-                    <>
-                      <SheetClose asChild>
-                        <Button asChild variant="ghost">
-                          <Link href={`/${lang}/login`}>
-                            <LogIn className="mr-2 h-5 w-5" />
-                            {t.login}
-                          </Link>
-                        </Button>
-                      </SheetClose>
-                      <SheetClose asChild>
-                        <Button
-                          asChild
-                          className="bg-primary text-primary-foreground hover:bg-primary/90"
-                        >
-                          <Link href={`/${lang}/register`}>{t.signUp}</Link>
-                        </Button>
-                      </SheetClose>
-                    </>
-                  )}
+                  <AuthButtons lang={lang} dictionary={t} />
                 </div>
               </div>
             </SheetContent>
