@@ -525,6 +525,29 @@
       "cityPlaceholder": "Select a city",
       "updateError": "Could not update information. Please try again."
     },
+    "summaryStep": {
+      "title": "Review Your Creation",
+      "productDetails": "Your Cake Details",
+      "recipeType": "Type",
+      "size": "Size",
+      "sponge": "Sponge",
+      "filling": "Filling",
+      "coverage": "Coverage",
+      "quantity": "Quantity",
+      "cakeQuantityHelpText": "Number of cakes (not portions)",
+      "cupcakeQuantityHelpText": "Each box contains {quantity} cupcakes",
+      "visualProposal": "Your Design",
+      "visualProposalDisclaimer": "The final product will be as close as possible to this visual proposal. Slight handmade variations may exist.",
+      "customization": "Your Personalization",
+      "shippingInfo": "Shipping Information",
+      "fullName": "Name",
+      "address": "Address",
+      "phone": "Phone",
+      "priceDetails": "Price Details",
+      "productCost": "Product Cost",
+      "shippingCost": "Shipping Cost",
+      "totalCost": "Total Cost"
+    },
     "recipeTypeDescriptions": {
       "cake": "Choose this option if you want a custom cake.",
       "cupcake": "Choose this option if you want custom cupcakes."
@@ -537,7 +560,7 @@
     "buttons": {
       "next": "Next",
       "back": "Back",
-      "finish": "Finish",
+      "finish": "Finish Order",
       "saving": "Saving..."
     }
   }

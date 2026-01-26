@@ -3,7 +3,6 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { useSession } from '@/context/session-provider';
-import { updateUser } from '@/lib/api';
 import {
   Dialog,
   DialogContent,
@@ -24,6 +23,7 @@ import ShippingStep, { ShippingData } from './wizard-steps/shipping-step';
 import { AuthChoiceStep } from './wizard-steps/auth-choice-step';
 import { LoginStep } from './wizard-steps/login-step';
 import { RegisterStep } from './wizard-steps/register-step';
+import { SummaryStep } from './wizard-steps/summary-step';
 import { Tamano } from '@/lib/types/tamano';
 import { Product } from '@/lib/types';
 
@@ -35,7 +35,7 @@ export interface ImageProposalResponse {
 
 type FullDictionary = Awaited<ReturnType<typeof getDictionary>>;
 
-interface OrderData {
+export interface OrderData {
   recipeType: { nombre: 'TORTA' | 'CUPCAKE' } | null;
   size: Tamano | null;
   sponge: Product | null;
@@ -43,6 +43,7 @@ interface OrderData {
   coverage: Product | null;
   customization: string | null;
   imageProposalData: ImageProposalResponse | null;
+  quantity: number;
 }
 
 type AuthStep = 'choice' | 'login' | 'register';
@@ -58,7 +59,7 @@ export function OrderWizardModal({
   // --- Hooks (Nivel Superior) ---
   const [isOpen, setIsOpen] = useState(true);
   const [currentStep, setCurrentStep] = useState(0);
-  const [orderData, setOrderData] = useState<OrderData>({ recipeType: null, size: null, sponge: null, filling: null, coverage: null, customization: null, imageProposalData: null });
+  const [orderData, setOrderData] = useState<OrderData>({ recipeType: null, size: null, sponge: null, filling: null, coverage: null, customization: null, imageProposalData: null, quantity: 1 });
   const [shippingData, setShippingData] = useState<ShippingData>({ telefono: '', direccion: '', departamento: '', ciudad: '' });
   const [isUpdating, setIsUpdating] = useState(false);
   const [updateError, setUpdateError] = useState<string | null>(null);
@@ -84,20 +85,8 @@ export function OrderWizardModal({
 
   // --- Handlers ---
   const handleNext = async () => {
-    if (currentStep === 6 && user) {
-      setIsUpdating(true);
-      setUpdateError(null);
-      try {
-        // No es necesario actualizar el usuario aquí porque el registro ya lo hizo
-        setCurrentStep(currentStep + 1);
-      } catch (error) {
-        console.error("Error moving to next step:", error);
-      } finally {
-        setIsUpdating(false);
-      }
-    } else if (currentStep < steps.length - 1) {
+    if (currentStep < steps.length - 1) {
       setCurrentStep(currentStep + 1);
-      setUpdateError(null);
     }
   };
 
@@ -106,7 +95,6 @@ export function OrderWizardModal({
       setAuthStep('choice');
     } else if (currentStep > 0) {
       setCurrentStep(currentStep - 1);
-      setUpdateError(null);
     }
   };
   
@@ -121,15 +109,19 @@ export function OrderWizardModal({
     await refreshSession();
   };
 
-  const resetSubsequentSteps = () => ({ size: null, sponge: null, filling: null, coverage: null, customization: null, imageProposalData: null });
+  const resetSubsequentSteps = () => ({ size: null, sponge: null, filling: null, coverage: null, customization: null, imageProposalData: null, quantity: 1 });
 
-  const handleRecipeTypeSelect = (recipeType: { nombre: 'TORTA' | 'CUPCAKE' }) => setOrderData({ recipeType, ...resetSubsequentSteps() });
+  const handleRecipeTypeSelect = (recipeType: { nombre: 'TORTA' | 'CUPCAKE' }) => {
+    const quantity = recipeType.nombre === 'CUPCAKE' ? 6 : 1;
+    setOrderData({ recipeType, ...resetSubsequentSteps(), quantity });
+  }
   const handleSizeSelect = (size: Tamano) => setOrderData({ ...orderData, size, sponge: null, filling: null, coverage: null, customization: null, imageProposalData: null });
   const handleSpongeSelect = (sponge: Product) => setOrderData({ ...orderData, sponge, filling: null, coverage: null, customization: null, imageProposalData: null });
   const handleFillingSelect = (filling: Product) => setOrderData({ ...orderData, filling, coverage: null, customization: null, imageProposalData: null });
   const handleCoverageSelect = (coverage: Product) => setOrderData({ ...orderData, coverage, customization: null, imageProposalData: null });
   const handleCustomizationChange = (value: string) => setOrderData({ ...orderData, customization: value, imageProposalData: null });
   const handleProposalChange = (proposal: ImageProposalResponse | null) => setOrderData(prev => ({ ...prev, imageProposalData: proposal }));
+  const handleQuantityChange = (quantity: number) => setOrderData(prev => ({ ...prev, quantity }));
 
   const handleEnhanceWithAI = async () => {
     setIsAILoading(true);
@@ -178,31 +170,13 @@ export function OrderWizardModal({
       case 3: return orderData.filling === null;
       case 4: return orderData.coverage === null;
       case 5: return !orderData.customization || !orderData.imageProposalData;
-      case 6: return false; // El botón Siguiente ahora es manejado por handleNext
       default: return false;
     }
   };
 
   const renderStepContent = () => {
     if (currentStep > 4 && (!orderData.recipeType || !orderData.size)) return null;
-    if (currentStep === 6) {
-      if (sessionLoading) return <div className="flex justify-center items-center h-full min-h-[300px]"></div>;
-      if (!user) {
-        if (authStep === 'choice') {
-          return <AuthChoiceStep dictionary={dictionary} onLoginClick={() => setAuthStep('login')} onRegisterClick={() => setAuthStep('register')} />;
-        }
-        if (authStep === 'login') {
-          return <LoginStep dictionary={dictionary} onLoginSuccess={handleAuthSuccess} />;
-        }
-        if (authStep === 'register') {
-          return <RegisterStep dictionary={dictionary} onRegisterSuccess={handleAuthSuccess} />;
-        }
-        return null;
-      } else {
-        return <ShippingStep data={shippingData} onDataChange={setShippingData} dictionary={dictionary} />;
-      }
-    }
-
+    
     switch (currentStep) {
       case 0: return <RecipeTypeStep dictionary={dictionary} onSelect={handleRecipeTypeSelect} selectedRecipeType={orderData.recipeType} />;
       case 1: return <SizeStep recipeType={orderData.recipeType!.nombre} selectedSize={orderData.size} onSelect={handleSizeSelect} dictionary={dictionary} />;
@@ -210,6 +184,24 @@ export function OrderWizardModal({
       case 3: return <FillingStep recipeType={orderData.recipeType!.nombre} sizeId={orderData.size!.id} selectedFilling={orderData.filling} onSelect={handleFillingSelect} />;
       case 4: return <CoverageStep recipeType={orderData.recipeType!.nombre} sizeId={orderData.size!.id} selectedCoverage={orderData.coverage} onSelect={handleCoverageSelect} />;
       case 5: return <CustomizationStep dictionary={dictionary} orderData={orderData} onValueChange={handleCustomizationChange} onEnhanceWithAI={handleEnhanceWithAI} isAILoading={isAILoading} onProposalChange={handleProposalChange}/>;
+      case 6: 
+        if (sessionLoading) return <div className="flex justify-center items-center h-full min-h-[300px]"></div>;
+        if (!user) {
+          if (authStep === 'choice') {
+            return <AuthChoiceStep dictionary={dictionary} onLoginClick={() => setAuthStep('login')} onRegisterClick={() => setAuthStep('register')} />;
+          }
+          if (authStep === 'login') {
+            return <LoginStep dictionary={dictionary} onLoginSuccess={handleAuthSuccess} />;
+          }
+          if (authStep === 'register') {
+            return <RegisterStep dictionary={dictionary} onRegisterSuccess={handleAuthSuccess} />;
+          }
+          return null;
+        } else {
+          return <ShippingStep data={shippingData} onDataChange={setShippingData} dictionary={dictionary} />;
+        }
+      case 7: 
+        return <SummaryStep dictionary={dictionary} orderData={orderData} shippingData={shippingData} onQuantityChange={handleQuantityChange} />
       default: return null;
     }
   };

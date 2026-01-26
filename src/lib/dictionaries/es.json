@@ -48,7 +48,7 @@
       },
       "submit": "Enviar Mensaje",
       "toast": {
-        "title": "¡Mensaje Enviado!",
+        "title": "¡Mensaje Sent!",
         "description": "Gracias por contactarnos. Te responderemos pronto."
       },
       "validation": {
@@ -525,6 +525,29 @@
       "cityPlaceholder": "Selecciona una ciudad",
       "updateError": "No se pudo actualizar la información. Inténtalo de nuevo."
     },
+    "summaryStep": {
+      "title": "Revisa tu Creación",
+      "productDetails": "Detalles de tu Torta",
+      "recipeType": "Tipo",
+      "size": "Tamaño",
+      "sponge": "Bizcocho",
+      "filling": "Relleno",
+      "coverage": "Cobertura",
+      "quantity": "Cantidad",
+      "cakeQuantityHelpText": "Número de tortas (no porciones)",
+      "cupcakeQuantityHelpText": "Cada caja contiene {quantity} cupcakes",
+      "visualProposal": "Tu Diseño",
+      "visualProposalDisclaimer": "El producto final será lo más fiel posible a esta propuesta visual. Pueden existir ligeras variaciones artesanales.",
+      "customization": "Tu Personalización",
+      "shippingInfo": "Información de Envío",
+      "fullName": "Nombre",
+      "address": "Dirección",
+      "phone": "Teléfono",
+      "priceDetails": "Detalles del Precio",
+      "productCost": "Costo del Producto",
+      "shippingCost": "Costo de Envío",
+      "totalCost": "Costo Total"
+    },
     "recipeTypeDescriptions": {
       "cake": "Elige esta opción si quieres una torta personalizada.",
       "cupcake": "Elige esta opción si quieres cupcakes personalizados."
@@ -537,7 +560,7 @@
     "buttons": {
       "next": "Siguiente",
       "back": "Atrás",
-      "finish": "Finalizar",
+      "finish": "Finalizar Pedido",
       "saving": "Guardando..."
     }
   }
