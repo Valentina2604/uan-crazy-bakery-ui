@@ -21,6 +21,8 @@ import { FillingStep } from './wizard-steps/filling-step';
 import { CoverageStep } from './wizard-steps/coverage-step';
 import { CustomizationStep } from './wizard-steps/customization-step';
 import ShippingStep, { ShippingData } from './wizard-steps/shipping-step';
+import { AuthChoiceStep } from './wizard-steps/auth-choice-step';
+import { LoginStep } from './wizard-steps/login-step';
 import { Tamano } from '@/lib/types/tamano';
 import { Product } from '@/lib/types';
 
@@ -42,6 +44,8 @@ interface OrderData {
   imageProposalData: ImageProposalResponse | null;
 }
 
+type AuthStep = 'choice' | 'login' | 'register';
+
 // --- Componente Principal ---
 export function OrderWizardModal({
   lang,
@@ -53,16 +57,15 @@ export function OrderWizardModal({
   // --- Hooks (Nivel Superior) ---
   const [isOpen, setIsOpen] = useState(true);
   const [currentStep, setCurrentStep] = useState(0);
-  const [orderData, setOrderData] = useState<OrderData>({
-    recipeType: null, size: null, sponge: null, filling: null, coverage: null, customization: null, imageProposalData: null
-  });
+  const [orderData, setOrderData] = useState<OrderData>({ recipeType: null, size: null, sponge: null, filling: null, coverage: null, customization: null, imageProposalData: null });
   const [shippingData, setShippingData] = useState<ShippingData>({ telefono: '', direccion: '', departamento: '', ciudad: '' });
   const [isUpdating, setIsUpdating] = useState(false);
   const [updateError, setUpdateError] = useState<string | null>(null);
   const [isAILoading, setIsAILoading] = useState(false);
+  const [authStep, setAuthStep] = useState<AuthStep>('choice');
   
   const router = useRouter();
-  const { user } = useSession();
+  const { user, loading: sessionLoading, refreshSession } = useSession();
   const { orderWizard } = dictionary;
   const steps = Object.values(orderWizard.steps);
 
@@ -99,7 +102,9 @@ export function OrderWizardModal({
   };
 
   const handleBack = () => {
-    if (currentStep > 0) {
+    if (currentStep === 6 && authStep !== 'choice') {
+      setAuthStep('choice');
+    } else if (currentStep > 0) {
       setCurrentStep(currentStep - 1);
       setUpdateError(null);
     }
@@ -110,6 +115,10 @@ export function OrderWizardModal({
       setIsOpen(false);
       setTimeout(() => router.push(`/${lang}`), 200);
     }
+  };
+
+  const handleLoginSuccess = async () => {
+    await refreshSession();
   };
 
   const resetSubsequentSteps = () => ({ size: null, sponge: null, filling: null, coverage: null, customization: null, imageProposalData: null });
@@ -161,6 +170,7 @@ export function OrderWizardModal({
 
   const isNextButtonDisabled = () => {
     if (isUpdating) return true;
+    if (currentStep === 6 && !user) return true;
     switch (currentStep) {
       case 0: return orderData.recipeType === null;
       case 1: return orderData.size === null;
@@ -175,6 +185,22 @@ export function OrderWizardModal({
 
   const renderStepContent = () => {
     if (currentStep > 4 && (!orderData.recipeType || !orderData.size)) return null;
+    if (currentStep === 6) {
+      if (sessionLoading) return <div className="flex justify-center items-center h-full min-h-[300px]"></div>;
+      if (!user) {
+        if (authStep === 'choice') {
+          return <AuthChoiceStep dictionary={dictionary} onLoginClick={() => setAuthStep('login')} onRegisterClick={() => setAuthStep('register')} />;
+        }
+        if (authStep === 'login') {
+          return <LoginStep dictionary={dictionary} onLoginSuccess={handleLoginSuccess} />;
+        }
+        // Aquí se renderizará el componente de registro en el futuro
+        return null;
+      } else {
+        return <ShippingStep data={shippingData} onDataChange={setShippingData} dictionary={dictionary} />;
+      }
+    }
+
     switch (currentStep) {
       case 0: return <RecipeTypeStep dictionary={dictionary} onSelect={handleRecipeTypeSelect} selectedRecipeType={orderData.recipeType} />;
       case 1: return <SizeStep recipeType={orderData.recipeType!.nombre} selectedSize={orderData.size} onSelect={handleSizeSelect} dictionary={dictionary} />;
@@ -182,7 +208,6 @@ export function OrderWizardModal({
       case 3: return <FillingStep recipeType={orderData.recipeType!.nombre} sizeId={orderData.size!.id} selectedFilling={orderData.filling} onSelect={handleFillingSelect} />;
       case 4: return <CoverageStep recipeType={orderData.recipeType!.nombre} sizeId={orderData.size!.id} selectedCoverage={orderData.coverage} onSelect={handleCoverageSelect} />;
       case 5: return <CustomizationStep dictionary={dictionary} orderData={orderData} onValueChange={handleCustomizationChange} onEnhanceWithAI={handleEnhanceWithAI} isAILoading={isAILoading} onProposalChange={handleProposalChange}/>;
-      case 6: return <ShippingStep data={shippingData} onDataChange={setShippingData} dictionary={dictionary} />;
       default: return null;
     }
   };

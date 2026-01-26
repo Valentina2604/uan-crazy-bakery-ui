@@ -1,4 +1,3 @@
-
 {
   "navigation": {
     "home": "Inicio",
@@ -449,6 +448,12 @@
       "customization": "Personaliza tu Pedido",
       "shipping": "Información de Envío",
       "summary": "Confirma tu Pedido"
+    },
+    "authChoiceStep": {
+      "title": "Casi listo para continuar",
+      "description": "Para guardar tu información de envío y continuar, por favor, inicia sesión en tu cuenta o crea una nueva.",
+      "loginButton": "Iniciar Sesión",
+      "registerButton": "Crear Cuenta"
     },
     "customizationStep": {
       "title": "¡Hazlo Tuyo!",

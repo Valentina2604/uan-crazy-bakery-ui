@@ -449,6 +449,12 @@
       "shipping": "Shipping Information",
       "summary": "Confirm Your Order"
     },
+    "authChoiceStep": {
+      "title": "Almost ready to continue",
+      "description": "To save your shipping information and continue, please log in to your account or create a new one.",
+      "loginButton": "Login",
+      "registerButton": "Create Account"
+    },
     "customizationStep": {
       "title": "Make it Yours!",
       "description": "Describe the special occasion and any ideas you have for the decoration. Is it a birthday, an anniversary? What colors, themes, or toppings would you like to see? Our AI will help you refine the details.",
