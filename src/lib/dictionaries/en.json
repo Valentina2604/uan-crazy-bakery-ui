@@ -455,6 +455,49 @@
       "loginButton": "Login",
       "registerButton": "Create Account"
     },
+    "registerStep": {
+      "title": "Create your account to continue",
+      "description": "Complete your details to create your account and save your shipping information.",
+      "name": {
+        "label": "Full Name",
+        "placeholder": "John Doe"
+      },
+      "email": {
+        "label": "Email",
+        "placeholder": "you@example.com"
+      },
+      "password": {
+        "label": "Password",
+        "placeholder": "Minimum 8 characters"
+      },
+      "confirmPassword": {
+        "label": "Confirm Password"
+      },
+      "phone": {
+        "label": "Phone",
+        "placeholder": "Your phone number"
+      },
+      "address": {
+        "label": "Address",
+        "placeholder": "E.g., 123 Main St, Apt 4B"
+      },
+      "department": {
+        "label": "Department",
+        "placeholder": "Select a department"
+      },
+      "city": {
+        "label": "City",
+        "placeholder": "Select a city"
+      },
+      "submitButton": "Create Account & Continue",
+      "validation": {
+        "name": "Name is required",
+        "phone": "Phone is required",
+        "address": "Address is required",
+        "department": "Department is required",
+        "city": "City is required"
+      }
+    },
     "customizationStep": {
       "title": "Make it Yours!",
       "description": "Describe the special occasion and any ideas you have for the decoration. Is it a birthday, an anniversary? What colors, themes, or toppings would you like to see? Our AI will help you refine the details.",

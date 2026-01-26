@@ -23,6 +23,7 @@ import { CustomizationStep } from './wizard-steps/customization-step';
 import ShippingStep, { ShippingData } from './wizard-steps/shipping-step';
 import { AuthChoiceStep } from './wizard-steps/auth-choice-step';
 import { LoginStep } from './wizard-steps/login-step';
+import { RegisterStep } from './wizard-steps/register-step';
 import { Tamano } from '@/lib/types/tamano';
 import { Product } from '@/lib/types';
 
@@ -87,11 +88,10 @@ export function OrderWizardModal({
       setIsUpdating(true);
       setUpdateError(null);
       try {
-        await updateUser(user.id, shippingData);
+        // No es necesario actualizar el usuario aquí porque el registro ya lo hizo
         setCurrentStep(currentStep + 1);
       } catch (error) {
-        console.error("Error updating user:", error);
-        setUpdateError(orderWizard.shippingStep.updateError);
+        console.error("Error moving to next step:", error);
       } finally {
         setIsUpdating(false);
       }
@@ -117,7 +117,7 @@ export function OrderWizardModal({
     }
   };
 
-  const handleLoginSuccess = async () => {
+  const handleAuthSuccess = async () => {
     await refreshSession();
   };
 
@@ -178,7 +178,7 @@ export function OrderWizardModal({
       case 3: return orderData.filling === null;
       case 4: return orderData.coverage === null;
       case 5: return !orderData.customization || !orderData.imageProposalData;
-      case 6: return false;
+      case 6: return false; // El botón Siguiente ahora es manejado por handleNext
       default: return false;
     }
   };
@@ -192,9 +192,11 @@ export function OrderWizardModal({
           return <AuthChoiceStep dictionary={dictionary} onLoginClick={() => setAuthStep('login')} onRegisterClick={() => setAuthStep('register')} />;
         }
         if (authStep === 'login') {
-          return <LoginStep dictionary={dictionary} onLoginSuccess={handleLoginSuccess} />;
+          return <LoginStep dictionary={dictionary} onLoginSuccess={handleAuthSuccess} />;
         }
-        // Aquí se renderizará el componente de registro en el futuro
+        if (authStep === 'register') {
+          return <RegisterStep dictionary={dictionary} onRegisterSuccess={handleAuthSuccess} />;
+        }
         return null;
       } else {
         return <ShippingStep data={shippingData} onDataChange={setShippingData} dictionary={dictionary} />;

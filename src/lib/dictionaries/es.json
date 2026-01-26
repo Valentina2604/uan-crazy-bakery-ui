@@ -455,6 +455,49 @@
       "loginButton": "Iniciar Sesión",
       "registerButton": "Crear Cuenta"
     },
+    "registerStep": {
+      "title": "Crea tu cuenta para continuar",
+      "description": "Completa tus datos para crear tu cuenta y guardar tu información de envío.",
+      "name": {
+        "label": "Nombre Completo",
+        "placeholder": "Juan Pérez"
+      },
+      "email": {
+        "label": "Correo Electrónico",
+        "placeholder": "tu@ejemplo.com"
+      },
+      "password": {
+        "label": "Contraseña",
+        "placeholder": "Mínimo 8 caracteres"
+      },
+      "confirmPassword": {
+        "label": "Confirmar Contraseña"
+      },
+      "phone": {
+        "label": "Teléfono",
+        "placeholder": "Tu número de teléfono"
+      },
+      "address": {
+        "label": "Dirección",
+        "placeholder": "Ej: Calle 5 # 10-15, Apto 201"
+      },
+      "department": {
+        "label": "Departamento",
+        "placeholder": "Selecciona un departamento"
+      },
+      "city": {
+        "label": "Ciudad",
+        "placeholder": "Selecciona una ciudad"
+      },
+      "submitButton": "Crear Cuenta y Continuar",
+      "validation": {
+        "name": "El nombre es requerido",
+        "phone": "El teléfono es requerido",
+        "address": "La dirección es requerida",
+        "department": "El departamento es requerido",
+        "city": "La ciudad es requerida"
+      }
+    },
     "customizationStep": {
       "title": "¡Hazlo Tuyo!",
       "description": "Describe la ocasión especial y cualquier idea que tengas para la decoración. ¿Es un cumpleaños, un aniversario? ¿Qué colores, temas o toppings te gustaría ver? Nuestra IA te ayudará a refinar los detalles.",
