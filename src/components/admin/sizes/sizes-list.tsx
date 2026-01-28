@@ -143,6 +143,7 @@ export function SizesList({ initialSizes, dictionary, lang }: SizesListProps) {
                       <TableHead>{dictionary.adminSizesPage.sizesTable.headers.height}</TableHead>
                       <TableHead>{dictionary.adminSizesPage.sizesTable.headers.diameter}</TableHead>
                       <TableHead>{dictionary.adminSizesPage.sizesTable.headers.portions}</TableHead>
+                      <TableHead>{dictionary.adminSizesPage.sizesTable.headers.time}</TableHead>
                       <TableHead>{dictionary.adminSizesPage.sizesTable.headers.actions}</TableHead>
                     </TableRow>
                   </TableHeader>
@@ -154,6 +155,7 @@ export function SizesList({ initialSizes, dictionary, lang }: SizesListProps) {
                           <TableCell>{size.alto}</TableCell>
                           <TableCell>{size.diametro}</TableCell>
                           <TableCell>{size.porciones}</TableCell>
+                          <TableCell>{size.tiempo}</TableCell>
                           <TableCell className="space-x-2">
                             <Tooltip>
                               <TooltipTrigger asChild>
@@ -200,7 +202,7 @@ export function SizesList({ initialSizes, dictionary, lang }: SizesListProps) {
                       ))
                     ) : (
                       <TableRow>
-                        <TableCell colSpan={5} className="text-center">
+                        <TableCell colSpan={6} className="text-center">
                           {dictionary.adminSizesPage.sizesTable.noSizes}
                         </TableCell>
                       </TableRow>

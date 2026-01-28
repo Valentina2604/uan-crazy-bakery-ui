@@ -336,6 +336,7 @@
         "height": "Height (cm)",
         "diameter": "Diameter (cm)",
         "portions": "Portions",
+        "time": "Time (hours)",
         "actions": "Actions"
       },
       "noSizes": "There are no sizes to display.",
@@ -355,7 +356,8 @@
         "name": "Name",
         "diameter": "Diameter (cm)",
         "height": "Height (cm)",
-        "portions": "Portions"
+        "portions": "Portions",
+        "time": "Time (hours)"
       },
       "buttons": {
         "cancel": "Cancel",

@@ -7,6 +7,7 @@ export interface Tamano {
   alto: number;
   diametro: number;
   porciones: number;
+  tiempo: number;
   estado: boolean;
   tipo_receta: TipoReceta;
 }

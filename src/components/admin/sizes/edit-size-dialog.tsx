@@ -25,6 +25,7 @@ const formSchema = z.object({
   diametro: z.coerce.number().positive('El diámetro debe ser un número positivo'),
   alto: z.coerce.number().positive('La altura debe ser un número positivo'),
   porciones: z.coerce.number().int().positive('Las porciones deben ser un número entero positivo'),
+  tiempo: z.coerce.number().positive('El tiempo debe ser un número positivo'),
 });
 
 interface EditSizeDialogProps {
@@ -43,6 +44,7 @@ export function EditSizeDialog({ isOpen, onClose, onSizeUpdated, size, dictionar
       diametro: 0,
       alto: 0,
       porciones: 0,
+      tiempo: 0,
     },
   });
 
@@ -52,6 +54,7 @@ export function EditSizeDialog({ isOpen, onClose, onSizeUpdated, size, dictionar
         diametro: size.diametro,
         alto: size.alto,
         porciones: size.porciones,
+        tiempo: size.tiempo,
       });
     }
   }, [size, form]);
@@ -123,6 +126,19 @@ export function EditSizeDialog({ isOpen, onClose, onSizeUpdated, size, dictionar
                     <FormLabel>{dictionary.adminSizesPage.addSizeModal.fields.portions}</FormLabel>
                     <FormControl>
                       <Input type="number" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="tiempo"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>{dictionary.adminSizesPage.addSizeModal.fields.time}</FormLabel>
+                    <FormControl>
+                      <Input type="number" {...field} step="0.1" />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
