@@ -9,21 +9,12 @@ import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Label } from '@/components/ui/label';
 import { useEffect, useState } from 'react';
+import { OrderData } from '../order-wizard-modal'; // Importamos el tipo desde el modal
+import { calcularCostoPedido } from '@/lib/apis/costo-api';
 
 type FullDictionary = Awaited<ReturnType<typeof getDictionary>>;
 
-// Tipos para los datos del pedido y envío, extraídos del modal principal
-interface OrderData {
-  recipeType: { nombre: 'TORTA' | 'CUPCAKE' } | null;
-  size: { nombre: string; porciones: number } | null;
-  sponge: { nombre: string } | null;
-  filling: { nombre: string } | null;
-  coverage: { nombre: string } | null;
-  customization: string | null;
-  imageProposalData: { imageUrl: string } | null;
-  quantity: number;
-}
-
+// El tipo ShippingData ya no es necesario aquí, se maneja en el modal
 interface ShippingData {
   telefono: string;
   direccion: string;
@@ -53,19 +44,60 @@ export function SummaryStep({ dictionary, orderData, shippingData, onQuantityCha
   const { user } = useSession();
   const t = dictionary.orderWizard.summaryStep;
 
-  // --- Estados de Precios (Simulados) ---
-  const [productCost, setProductCost] = useState(0);
-  const [shippingCost, setShippingCost] = useState(5000); // Envío fijo simulado
-  const [totalCost, setTotalCost] = useState(0);
+  const [productCost, setProductCost] = useState<number | null>(null);
+  const [shippingCost, setShippingCost] = useState(10000); // Costo de envío fijo
+  const [totalCost, setTotalCost] = useState<number | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
-  // --- Efectos para calcular costos ---
   useEffect(() => {
-    // Simulación de costo base del producto
-    const baseCost = orderData.recipeType?.nombre === 'TORTA' ? 80000 : 30000;
-    const finalProductCost = baseCost * orderData.quantity;
-    setProductCost(finalProductCost);
-    setTotalCost(finalProductCost + shippingCost);
-  }, [orderData.quantity, orderData.recipeType, shippingCost]);
+    const calculateCost = async () => {
+      // Asegurarnos de que tenemos todos los datos necesarios
+      if (
+        !orderData.recipeType ||
+        !orderData.size ||
+        !orderData.sponge ||
+        !orderData.filling ||
+        !orderData.coverage
+      ) {
+        return;
+      }
+
+      setIsLoading(true);
+      setError(null);
+
+      try {
+        const ingredientesIds = [
+          orderData.sponge.id,
+          orderData.filling.id,
+          orderData.coverage.id
+        ].filter(id => id != null) as number[];
+
+        const requestData = {
+          tipoReceta: orderData.recipeType.nombre,
+          tamanoId: orderData.size.id,
+          ingredientesIds,
+          cantidad: orderData.quantity,
+        };
+
+        const response = await calcularCostoPedido(requestData);
+        const calculatedProductCost = response.valorTotalPedido;
+        
+        setProductCost(calculatedProductCost);
+        setTotalCost(calculatedProductCost + shippingCost);
+
+      } catch (err) {
+        console.error("Error calculating cost:", err);
+        setError(t.priceError || 'No se pudo calcular el precio. Inténtalo de nuevo.');
+        setProductCost(null);
+        setTotalCost(null);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    calculateCost();
+  }, [orderData, shippingCost, t.priceError]);
 
 
   // Fallback si falta información esencial
@@ -164,13 +196,23 @@ export function SummaryStep({ dictionary, orderData, shippingData, onQuantityCha
         <Card>
             <CardHeader><CardTitle>{t.priceDetails}</CardTitle></CardHeader>
             <CardContent className="space-y-3">
-                <DetailItem label={t.productCost} value={productCost} isCurrency />
-                <DetailItem label={t.shippingCost} value={shippingCost} isCurrency />
-                <Separator />
-                <div className="flex justify-between font-bold text-lg">
-                    <p>{t.totalCost}:</p>
-                    <p className="font-mono">${totalCost.toLocaleString('es-CO')}</p>
-                </div>
+                {isLoading ? (
+                    <p className="text-sm text-muted-foreground">{t.calculatingPrice}...</p>
+                ) : error ? (
+                    <p className="text-sm text-red-500">{error}</p>
+                ) : (
+                    <>
+                        <DetailItem label={t.productCost} value={productCost} isCurrency />
+                        <DetailItem label={t.shippingCost} value={shippingCost} isCurrency />
+                        <Separator />
+                        <div className="flex justify-between font-bold text-lg">
+                            <p>{t.totalCost}:</p>
+                            {totalCost !== null ? (
+                               <p className="font-mono">${totalCost.toLocaleString('es-CO')}</p>
+                            ) : null}
+                        </div>
+                    </>
+                )}
             </CardContent>
         </Card>
 
