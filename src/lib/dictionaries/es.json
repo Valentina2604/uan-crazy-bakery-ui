@@ -564,6 +564,16 @@
       "back": "Atrás",
       "finish": "Finalizar Pedido",
       "saving": "Guardando..."
+    },
+    "errors": {
+      "incompleteData": "Faltan datos para procesar la orden.",
+      "unknown": "Ocurrió un error desconocido."
+    },
+    "successScreen": {
+      "title": "¡Producto Añadido!",
+      "orderNumberLabel": "Tu número de orden es:",
+      "addProductButton": "Añadir otro producto",
+      "finishOrderButton": "Finalizar y ver mi pedido"
     }
   }
 }

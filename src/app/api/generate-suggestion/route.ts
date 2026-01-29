@@ -10,7 +10,7 @@ export const runtime = 'edge';
 function buildPrompt(orderData: any, customizationText: string): string {
   const { recipeType, size, sponge, filling, coverage } = orderData;
 
-  let prompt = `Actúa como un asistente experto de una pastelería creativa. Un cliente está personalizando un pedido y necesita ayuda para refinar su idea.`;
+  let prompt = `Actúa como un asistente experto de la pastelería "Crazy Bakery". Un cliente está personalizando un pedido y necesita ayuda para refinar su idea.`;
   prompt += `\n\nEl cliente ha seleccionado lo siguiente:\n`;
   prompt += `- Tipo: ${recipeType?.nombre || 'No especificado'}\n`;
   if (size) {
@@ -28,6 +28,9 @@ function buildPrompt(orderData: any, customizationText: string): string {
   prompt += `3.  **Figuras 3D:** NO puedes crear figuras complejas en 3D (ej: personajes modelados en fondant). Menciona esta limitación si el cliente la pide, pero ofrece una alternativa creativa (como una impresión en papel de arroz).\n`;
   prompt += `4.  **Formato:** Tu respuesta debe ser una única descripción mejorada y detallada de la decoración final. No ofrezcas varias opciones. Debe ser un párrafo coherente y atractivo que el cliente pueda leer y confirmar.\n`;
   prompt += `5.  **Tono:** Sé amable, creativo y describe el pastel de una manera que suene deliciosa y visualmente atractiva.\n`;
+  prompt += `6.  **Regla Crítica de Derechos de Autor:** Si el cliente solicita un personaje famoso con derechos de autor (por ejemplo, 'Mickey Mouse', 'Elsa', 'Spider-Man', personajes de anime, etc.), DEBES OBLIGATORIAMENTE reemplazar el nombre explícito por una descripción genérica que evoque al personaje sin nombrarlo. Por ejemplo, en lugar de "decorado con Mickey Mouse", debes proponer "decorado con la figura de un alegre ratoncito de orejas grandes y redondas y pantalones cortos rojos". Este paso es fundamental para evitar infracciones de derechos de autor en la generación de la propuesta visual.\n`;
+  prompt += `7.  **Originalidad:** Todas las propuestas deben ser creaciones originales para "Crazy Bakery". No imites el estilo de otros pasteleros, artistas o marcas registradas. Inspírate en la petición del cliente para crear un diseño nuevo y único.\n`;
+
 
   prompt += `\nBasado en toda esta información, genera ahora la descripción de la decoración final para el pastel.\n`;
 

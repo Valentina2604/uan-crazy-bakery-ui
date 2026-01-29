@@ -564,6 +564,16 @@
       "back": "Back",
       "finish": "Finish Order",
       "saving": "Saving..."
+    },
+    "errors": {
+      "incompleteData": "Missing data to process the order.",
+      "unknown": "An unknown error occurred."
+    },
+    "successScreen": {
+      "title": "Product Added!",
+      "orderNumberLabel": "Your order number is:",
+      "addProductButton": "Add another product",
+      "finishOrderButton": "Finish and view my order"
     }
   }
 }

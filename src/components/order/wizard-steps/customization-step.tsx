@@ -92,7 +92,6 @@ export const CustomizationStep = ({
         <p className="text-sm text-muted-foreground mt-1">{customizationStep.description}</p>
       </div>
       <div className="grid w-full gap-2">
-        <Label htmlFor="customization-text">{customizationStep.placeholder}</Label>
         <Textarea
           id="customization-text"
           placeholder={customizationStep.placeholder}
@@ -100,6 +99,7 @@ export const CustomizationStep = ({
           onChange={handleTextChange}
           rows={5}
           className="text-base"
+          disabled={isAILoading || isGenerating}
         />
       </div>
 
