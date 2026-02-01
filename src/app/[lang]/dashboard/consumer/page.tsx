@@ -18,7 +18,7 @@ export default async function ConsumerDashboardPage({
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         <DashboardCard
           lang={lang}
-          href="/consumer/orders"
+          href="/dashboard/consumer/orders"
           title={dictionary.consumerDashboard.cards.orders.title}
           description={dictionary.consumerDashboard.cards.orders.description}
         />

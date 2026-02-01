@@ -1,3 +1,4 @@
+
 {
   "navigation": {
     "home": "Home",
@@ -436,6 +437,91 @@
       "settings": {
         "title": "Settings",
         "description": "Manage your account settings and preferences."
+      }
+    }
+  },
+  "consumerOrders": {
+    "title": "Order History",
+    "description": "Here you can view the history and status of all your orders.",
+    "table": {
+      "headers": {
+        "order": "Order",
+        "status": "Status",
+        "date": "Date",
+        "actions": "Actions"
+      },
+      "actions": {
+        "addNote": "Add note",
+        "cancelOrder": "Cancel order"
+      },
+      "loading": "Loading orders...",
+      "noOrders": "You have no orders yet.",
+      "pagination": {
+        "previous": "Previous",
+        "next": "Next",
+        "page": "Page {currentPage} of {totalPages}",
+        "rowsPerPage": "Rows per page"
+      },
+      "tooltips": {
+        "disabledCancel": "Cannot cancel at this stage."
+      }
+    },
+    "orderDetailsModal": {
+      "title": "Order Details #{orderId}",
+      "requestDateLabel": "Request Date",
+      "shippingAddressCard": {
+        "title": "Shipping Address"
+      },
+      "orderCostCard": {
+        "title": "Order Cost",
+        "subtotalLabel": "Order cost",
+        "shippingLabel": "Shipping cost",
+        "totalLabel": "Total Cost"
+      },
+      "creationTab": {
+        "title": "Creation #{index}"
+      },
+      "proposalCard": {
+        "title": "Crazy Bakery Proposal",
+        "imageAlt": "Visual proposal for the creation"
+      },
+      "customization": {
+        "toggleButton": "Show/Hide Customization Text",
+        "title": "Customization Text"
+      },
+      "closeButton": "Close"
+    },
+    "addNoteModal": {
+      "title": "Add Note to Order",
+      "description": "The note will be visible to the bakery staff. Use it to clarify details or ask questions.",
+      "placeholder": "Write your note here...",
+      "cancel": "Cancel",
+      "submit": "Submit Note",
+      "submitting": "Submitting..."
+    },
+    "cancelOrderDialog": {
+      "title": "Are you sure you want to cancel this order?",
+      "description": "This action cannot be undone. This will permanently cancel your order.",
+      "cancel": "Close",
+      "confirm": "Confirm Cancellation",
+      "confirming": "Cancelling..."
+    },
+    "toasts": {
+      "addNoteSuccess": {
+        "title": "Note Added!",
+        "description": "Your note has been successfully added to the order."
+      },
+      "addNoteError": {
+        "title": "Error Adding Note",
+        "description": "There was a problem adding your note. Please try again."
+      },
+      "cancelOrderSuccess": {
+        "title": "Order Cancelled",
+        "description": "Your order has been successfully cancelled."
+      },
+      "cancelOrderError": {
+        "title": "Error Cancelling Order",
+        "description": "There was a problem cancelling your order. Please try again."
       }
     }
   },

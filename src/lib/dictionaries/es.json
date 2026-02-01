@@ -1,3 +1,4 @@
+
 {
   "navigation": {
     "home": "Inicio",
@@ -436,6 +437,91 @@
       "settings": {
         "title": "Configuración",
         "description": "Gestiona la configuración de tu cuenta y tus preferencias."
+      }
+    }
+  },
+  "consumerOrders": {
+    "title": "Historial de Pedidos",
+    "description": "Aquí puedes ver el historial y el estado de todos tus pedidos.",
+    "table": {
+      "headers": {
+        "order": "Pedido",
+        "status": "Estado",
+        "date": "Fecha",
+        "actions": "Acciones"
+      },
+      "actions": {
+        "addNote": "Agregar nota",
+        "cancelOrder": "Cancelar pedido"
+      },
+      "loading": "Cargando pedidos...",
+      "noOrders": "Aún no tienes pedidos.",
+      "pagination": {
+        "previous": "Anterior",
+        "next": "Siguiente",
+        "page": "Página {currentPage} de {totalPages}",
+        "rowsPerPage": "Filas por página"
+      },
+      "tooltips": {
+        "disabledCancel": "No se puede cancelar en esta etapa."
+      }
+    },
+    "orderDetailsModal": {
+      "title": "Detalles del Pedido #{orderId}",
+      "requestDateLabel": "Fecha Solicitud",
+      "shippingAddressCard": {
+        "title": "Dirección de Envío"
+      },
+      "orderCostCard": {
+        "title": "Costo del Pedido",
+        "subtotalLabel": "Costo del pedido",
+        "shippingLabel": "Costo de envío",
+        "totalLabel": "Costo Total"
+      },
+      "creationTab": {
+        "title": "Creación #{index}"
+      },
+      "proposalCard": {
+        "title": "Propuesta Crazy Bakery",
+        "imageAlt": "Propuesta visual para la creación"
+      },
+      "customization": {
+        "toggleButton": "Ver/Ocultar Texto de Personalización",
+        "title": "Texto de Personalización"
+      },
+      "closeButton": "Cerrar"
+    },
+    "addNoteModal": {
+      "title": "Agregar Nota al Pedido",
+      "description": "La nota será visible para el personal de la pastelería. Úsalo para aclarar detalles o hacer preguntas.",
+      "placeholder": "Escribe tu nota aquí...",
+      "cancel": "Cancelar",
+      "submit": "Enviar Nota",
+      "submitting": "Enviando..."
+    },
+    "cancelOrderDialog": {
+      "title": "¿Estás seguro de que quieres cancelar este pedido?",
+      "description": "Esta acción no se puede deshacer. Esto cancelará permanentemente tu pedido.",
+      "cancel": "Cerrar",
+      "confirm": "Confirmar Cancelación",
+      "confirming": "Cancelando..."
+    },
+    "toasts": {
+      "addNoteSuccess": {
+        "title": "¡Nota Agregada!",
+        "description": "Tu nota ha sido agregada exitosamente al pedido."
+      },
+      "addNoteError": {
+        "title": "Error al Agregar la Nota",
+        "description": "Hubo un problema al agregar tu nota. Por favor, inténtalo de nuevo."
+      },
+      "cancelOrderSuccess": {
+        "title": "Pedido Cancelado",
+        "description": "Tu pedido ha sido cancelado exitosamente."
+      },
+      "cancelOrderError": {
+        "title": "Error al Cancelar el Pedido",
+        "description": "Hubo un problema al cancelar tu pedido. Por favor, inténtalo de nuevo."
       }
     }
   },
