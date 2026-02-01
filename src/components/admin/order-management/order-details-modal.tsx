@@ -108,6 +108,27 @@ export function OrderDetailsModal({ isOpen, onClose, order, dictionary }: OrderD
             {order.recetas.map((receta, index) => (
               <TabsContent key={index} value={`creacion-${index}`}>
                 <div className="grid gap-4 mt-4">
+                  {receta.torta && (
+                  <Card>
+                    <CardHeader><CardTitle>{orderDetailsModal.cakeDetailsCard.title}</CardTitle></CardHeader>
+                    <CardContent className="text-sm">
+                      <div className="grid grid-cols-2 gap-x-4 gap-y-2">
+                        <p className="font-semibold text-muted-foreground">{orderDetailsModal.cakeDetailsCard.sizeLabel}:</p>
+                        <p>{receta.torta.tamano.nombre}</p>
+
+                        <p className="font-semibold text-muted-foreground">{orderDetailsModal.cakeDetailsCard.baseLabel}:</p>
+                        <p>{receta.torta.bizcocho.nombre}</p>
+
+                        <p className="font-semibold text-muted-foreground">{orderDetailsModal.cakeDetailsCard.fillingLabel}:</p>
+                        <p>{receta.torta.relleno.nombre}</p>
+
+                        <p className="font-semibold text-muted-foreground">{orderDetailsModal.cakeDetailsCard.frostingLabel}:</p>
+                        <p>{receta.torta.cubertura.nombre}</p>
+                      </div>
+                    </CardContent>
+                  </Card>
+                  )}
+
                   {receta.imagenUrl && (
                     <Card>
                       <CardHeader><CardTitle>{orderDetailsModal.proposalCard.title}</CardTitle></CardHeader>

@@ -521,6 +521,13 @@
       "creationTab": {
         "title": "Creación #{index}"
       },
+      "cakeDetailsCard": {
+        "title": "Detalles de la Torta",
+        "sizeLabel": "Tamaño",
+        "baseLabel": "Bizcocho",
+        "fillingLabel": "Relleno",
+        "frostingLabel": "Cobertura"
+      },
       "proposalCard": {
         "title": "Propuesta Crazy Bakery",
         "imageAlt": "Propuesta visual para la creación"
@@ -694,15 +701,6 @@
       "productCost": "Costo del Producto",
       "shippingCost": "Costo de Envío",
       "totalCost": "Costo Total"
-    },
-    "recipeTypeDescriptions": {
-      "cake": "Elige esta opción si quieres una torta personalizada.",
-      "cupcake": "Elige esta opción si quieres cupcakes personalizados."
-    },
-    "sizeDetails": {
-      "portions": "Porciones",
-      "height": "Alto",
-      "diameter": "Diámetro"
     },
     "buttons": {
       "next": "Siguiente",
