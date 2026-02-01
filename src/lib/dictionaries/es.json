@@ -565,6 +565,11 @@
       }
     }
   },
+  "editOrderModal": {
+    "title": "Editar Pedido",
+    "cancel": "Cancelar",
+    "save": "Guardar Cambios"
+  },
   "orderModal": {
     "title": "Detalles del Pedido",
     "orderDetails": "Detalles del Pedido",

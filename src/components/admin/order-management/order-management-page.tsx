@@ -2,7 +2,7 @@
 
 import { useEffect, useState, useCallback } from 'react';
 import Link from 'next/link';
-import { getOrders } from '@/lib/api';
+import { getOrders, updateOrderStatus } from '@/lib/api';
 import { Order, Estado } from '@/lib/types/order';
 import { OrdersTable } from './orders-table';
 import { StatusFilter } from './status-filter';
@@ -58,11 +58,16 @@ export function OrderManagementPage({ dictionary, lang }: OrderManagementPagePro
     setSelectedStatus(newStatus);
   };
 
-  const handleUpdateStatus = (orderId: number, newStatus: Estado) => {
-    const updatedOrders = orders.map(order =>
-      order.id === orderId ? { ...order, estado: newStatus } : order
-    );
-    setOrders(updatedOrders);
+  const handleUpdateStatus = async (orderId: number, newStatus: Estado) => {
+    try {
+      const updatedOrder = await updateOrderStatus(orderId, newStatus);
+      const updatedOrders = orders.map(order =>
+        order.id === orderId ? updatedOrder : order
+      );
+      setOrders(updatedOrders);
+    } catch (error) {
+      console.error("Failed to update order status:", error);
+    }
   };
 
   return (

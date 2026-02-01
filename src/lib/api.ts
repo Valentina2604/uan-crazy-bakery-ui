@@ -406,3 +406,25 @@ export async function getOrders(status?: Estado | 'ALL'): Promise<Order[]> {
 
   return data;
 }
+
+/**
+ * Updates the status of an order in the backend.
+ * @param orderId - The ID of the order to update.
+ * @param newStatus - The new status for the order.
+ * @returns The response from the server.
+ */
+export async function updateOrderStatus(orderId: number, newStatus: Estado): Promise<Order> {
+  const response = await fetch(`${BASE_URL}/orden/${orderId}/estado`, {
+    method: 'PATCH',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({ estado: newStatus }),
+  });
+
+  if (!response.ok) {
+    throw new Error(`Error updating order status: ${response.statusText}`);
+  }
+
+  return response.json();
+}
