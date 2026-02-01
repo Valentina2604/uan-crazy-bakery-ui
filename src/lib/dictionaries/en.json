@@ -167,8 +167,8 @@
         "title": "Manage Products",
         "description": "Add, edit, or remove products from the catalog."
       },
-      "orders": {
-        "title": "View Orders",
+      "clientOrders": {
+        "title": "Client Orders",
         "description": "Review and manage customer orders."
       },
       "users": {
@@ -178,7 +178,47 @@
       "sizes": {
         "title": "Manage Sizes",
         "description": "Add, edit, or remove sizes for the products."
+      },
+      "orderManagement": {
+        "title": "Order Management",
+        "description": "Manage the different states and details of the orders."
       }
+    }
+  },
+  "adminOrderManagementPage": {
+    "title": "Order Management",
+    "description": "This page will allow you to manage all the orders of the system.",
+    "breadcrumb": "Back to Dashboard",
+    "ordersTable": {
+      "title": "Orders",
+      "searchPlaceholder": "Filter by order ID or client...",
+      "orderId": "Order ID",
+      "client": "Client",
+      "date": "Date",
+      "totalValue": "Total",
+      "status": "Status",
+      "actions": "Actions",
+      "pagination": {
+        "previous": "Previous",
+        "next": "Next"
+      },
+      "noOrders": "There are no orders to display.",
+      "noClient": "No Client"
+    },
+    "orderStatus": {
+      "title": "Filter by Status",
+      "all": "All Statuses",
+      "CREADO": "Created",
+      "CONFIRMADO": "Confirmed",
+      "EN_PREPARACION": "In Preparation",
+      "LISTO": "Ready",
+      "ENTREGADO": "Delivered",
+      "CANCELADO": "Canceled"
+    },
+    "actions": {
+      "view": "View Details",
+      "edit": "Edit Order",
+      "delete": "Delete Order"
     }
   },
   "adminUsersPage": {

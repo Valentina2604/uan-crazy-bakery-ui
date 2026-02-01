@@ -167,8 +167,8 @@
         "title": "Gestionar Productos",
         "description": "Añadir, editar o eliminar productos del catálogo."
       },
-      "orders": {
-        "title": "Ver Pedidos",
+      "clientOrders": {
+        "title": "Pedidos de Clientes",
         "description": "Revisar y gestionar los pedidos de los clientes."
       },
       "users": {
@@ -178,7 +178,47 @@
       "sizes": {
         "title": "Gestionar Tamaños",
         "description": "Añadir, editar o eliminar tamaños para los productos."
+      },
+      "orderManagement": {
+        "title": "Gestión de Pedidos",
+        "description": "Gestionar los diferentes estados y detalles de los pedidos."
       }
+    }
+  },
+  "adminOrderManagementPage": {
+    "title": "Gestión de Pedidos",
+    "description": "Esta página te permitirá gestionar todos los pedidos del sistema.",
+    "breadcrumb": "Volver al Dashboard",
+    "ordersTable": {
+      "title": "Pedidos",
+      "searchPlaceholder": "Filtrar por ID de pedido o cliente...",
+      "orderId": "ID Pedido",
+      "client": "Cliente",
+      "date": "Fecha",
+      "totalValue": "Total",
+      "status": "Estado",
+      "actions": "Acciones",
+      "pagination": {
+        "previous": "Anterior",
+        "next": "Siguiente"
+      },
+      "noOrders": "No hay pedidos para mostrar.",
+      "noClient": "Sin Cliente"
+    },
+    "orderStatus": {
+      "title": "Filtrar por Estado",
+      "all": "Todos los Estados",
+      "CREADO": "Creado",
+      "CONFIRMADO": "Confirmado",
+      "EN_PREPARACION": "En Preparación",
+      "LISTO": "Listo para Entrega",
+      "ENTREGADO": "Entregado",
+      "CANCELADO": "Cancelado"
+    },
+    "actions": {
+      "view": "Ver Detalles",
+      "edit": "Editar Pedido",
+      "delete": "Eliminar Pedido"
     }
   },
   "adminUsersPage": {
@@ -656,10 +696,7 @@
       "unknown": "Ocurrió un error desconocido."
     },
     "successScreen": {
-      "title": "¡Producto Añadido!",
-      "orderNumberLabel": "Tu número de orden es:",
-      "addProductButton": "Añadir otro producto",
-      "finishOrderButton": "Finalizar y ver mi pedido"
+      "title": "¡Producto Añadido!","orderNumberLabel": "Tu número de orden es:","addProductButton": "Añadir otro producto","finishOrderButton": "Finalizar y ver mi pedido"
     }
   }
 }

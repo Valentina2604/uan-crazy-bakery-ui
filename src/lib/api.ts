@@ -1,10 +1,10 @@
-
 import { User } from './types/user';
 import { CreateTamanoPayload, Tamano, UpdateTamanoPayload } from './types/tamano';
 import { IngredienteTamano } from './types/ingrediente-tamano';
 import { IngredienteTamanoDetalle } from './types/ingrediente-tamano-detalle';
 import { Product } from './types/product';
 import { ProductType } from './types/product-type';
+import { Order, Estado } from './types/order';
 
 const BASE_URL = 'https://crazy-bakery-bk-835393530868.us-central1.run.app';
 
@@ -373,4 +373,36 @@ export async function getProductsByType(type: string): Promise<Product[]> {
   }
 
   return response.json();
+}
+
+/**
+ * Fetches orders from the backend. Can be filtered by status.
+ * @param status - The status to filter orders by. If 'ALL' or undefined, fetches all orders.
+ * @returns A promise that resolves to an array of orders.
+ */
+export async function getOrders(status?: Estado | 'ALL'): Promise<Order[]> {
+  let url = `${BASE_URL}/orden`;
+  if (status && status !== 'ALL') {
+    url = `${BASE_URL}/orden/estado/${status}`;
+  }
+
+  const response = await fetch(url, {
+    cache: 'no-store',
+  });
+
+  if (!response.ok) {
+    if (status === 'EN_PREPARACION' || response.status === 404) {
+      return [];
+    }
+    console.error(`Failed to fetch orders with status: ${status}`);
+    throw new Error(`Failed to fetch orders with status: ${status}`);
+  }
+
+  const data = await response.json();
+
+  if (!Array.isArray(data)) {
+    return [];
+  }
+
+  return data;
 }
