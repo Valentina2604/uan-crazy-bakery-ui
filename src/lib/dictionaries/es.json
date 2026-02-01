@@ -565,6 +565,20 @@
       }
     }
   },
+  "orderModal": {
+    "title": "Detalles del Pedido",
+    "orderDetails": "Detalles del Pedido",
+    "orderId": "ID del Pedido",
+    "date": "Fecha",
+    "status": "Estado",
+    "customerDetails": "Detalles del Cliente",
+    "customerName": "Nombre",
+    "customerEmail": "Correo Electrónico",
+    "recipes": "Recetas",
+    "subtotal": "Subtotal",
+    "total": "Total",
+    "close": "Cerrar"
+  },
   "orderWizard": {
     "title": "Crea tu Propio Pedido",
     "steps": {

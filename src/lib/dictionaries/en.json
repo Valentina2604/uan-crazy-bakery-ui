@@ -565,6 +565,20 @@
       }
     }
   },
+  "orderModal": {
+    "title": "Order Details",
+    "orderDetails": "Order Details",
+    "orderId": "Order ID",
+    "date": "Date",
+    "status": "Status",
+    "customerDetails": "Customer Details",
+    "customerName": "Name",
+    "customerEmail": "Email",
+    "recipes": "Recipes",
+    "subtotal": "Subtotal",
+    "total": "Total",
+    "close": "Close"
+  },
   "orderWizard": {
     "title": "Create Your Own Order",
     "steps": {
