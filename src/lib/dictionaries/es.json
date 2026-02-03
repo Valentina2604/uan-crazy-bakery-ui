@@ -167,8 +167,8 @@
         "title": "Gestionar Productos",
         "description": "Añadir, editar o eliminar productos del catálogo."
       },
-      "orders": {
-        "title": "Ver Pedidos",
+      "clientOrders": {
+        "title": "Pedidos de Clientes",
         "description": "Revisar y gestionar los pedidos de los clientes."
       },
       "users": {
@@ -178,7 +178,47 @@
       "sizes": {
         "title": "Gestionar Tamaños",
         "description": "Añadir, editar o eliminar tamaños para los productos."
+      },
+      "orderManagement": {
+        "title": "Gestión de Pedidos",
+        "description": "Gestionar los diferentes estados y detalles de los pedidos."
       }
+    }
+  },
+  "adminOrderManagementPage": {
+    "title": "Gestión de Pedidos",
+    "description": "Esta página te permitirá gestionar todos los pedidos del sistema.",
+    "breadcrumb": "Volver al Dashboard",
+    "ordersTable": {
+      "title": "Pedidos",
+      "searchPlaceholder": "Filtrar por ID de pedido o cliente...",
+      "orderId": "ID Pedido",
+      "client": "Cliente",
+      "date": "Fecha",
+      "totalValue": "Total",
+      "status": "Estado",
+      "actions": "Acciones",
+      "pagination": {
+        "previous": "Anterior",
+        "next": "Siguiente"
+      },
+      "noOrders": "No hay pedidos para mostrar.",
+      "noClient": "Sin Cliente"
+    },
+    "orderStatus": {
+      "title": "Filtrar por Estado",
+      "all": "Todos los Estados",
+      "CREADO": "Creado",
+      "CONFIRMADO": "Confirmado",
+      "EN_PREPARACION": "En Preparación",
+      "LISTO": "Listo para Entrega",
+      "ENTREGADO": "Entregado",
+      "CANCELADO": "Cancelado"
+    },
+    "actions": {
+      "view": "Ver Detalles",
+      "edit": "Editar Pedido",
+      "delete": "Eliminar Pedido"
     }
   },
   "adminUsersPage": {
@@ -481,6 +521,13 @@
       "creationTab": {
         "title": "Creación #{index}"
       },
+      "cakeDetailsCard": {
+        "title": "Detalles de la Torta",
+        "sizeLabel": "Tamaño",
+        "baseLabel": "Bizcocho",
+        "fillingLabel": "Relleno",
+        "frostingLabel": "Cobertura"
+      },
       "proposalCard": {
         "title": "Propuesta Crazy Bakery",
         "imageAlt": "Propuesta visual para la creación"
@@ -524,6 +571,25 @@
         "description": "Hubo un problema al cancelar tu pedido. Por favor, inténtalo de nuevo."
       }
     }
+  },
+  "editOrderModal": {
+    "title": "Editar Pedido",
+    "cancel": "Cancelar",
+    "save": "Guardar Cambios"
+  },
+  "orderModal": {
+    "title": "Detalles del Pedido",
+    "orderDetails": "Detalles del Pedido",
+    "orderId": "ID del Pedido",
+    "date": "Fecha",
+    "status": "Estado",
+    "customerDetails": "Detalles del Cliente",
+    "customerName": "Nombre",
+    "customerEmail": "Correo Electrónico",
+    "recipes": "Recetas",
+    "subtotal": "Subtotal",
+    "total": "Total",
+    "close": "Cerrar"
   },
   "orderWizard": {
     "title": "Crea tu Propio Pedido",
@@ -636,15 +702,6 @@
       "shippingCost": "Costo de Envío",
       "totalCost": "Costo Total"
     },
-    "recipeTypeDescriptions": {
-      "cake": "Elige esta opción si quieres una torta personalizada.",
-      "cupcake": "Elige esta opción si quieres cupcakes personalizados."
-    },
-    "sizeDetails": {
-      "portions": "Porciones",
-      "height": "Alto",
-      "diameter": "Diámetro"
-    },
     "buttons": {
       "next": "Siguiente",
       "back": "Atrás",
@@ -656,10 +713,7 @@
       "unknown": "Ocurrió un error desconocido."
     },
     "successScreen": {
-      "title": "¡Producto Añadido!",
-      "orderNumberLabel": "Tu número de orden es:",
-      "addProductButton": "Añadir otro producto",
-      "finishOrderButton": "Finalizar y ver mi pedido"
+      "title": "¡Producto Añadido!","orderNumberLabel": "Tu número de orden es:","addProductButton": "Añadir otro producto","finishOrderButton": "Finalizar y ver mi pedido"
     }
   }
 }

@@ -167,8 +167,8 @@
         "title": "Manage Products",
         "description": "Add, edit, or remove products from the catalog."
       },
-      "orders": {
-        "title": "View Orders",
+      "clientOrders": {
+        "title": "Client Orders",
         "description": "Review and manage customer orders."
       },
       "users": {
@@ -178,7 +178,47 @@
       "sizes": {
         "title": "Manage Sizes",
         "description": "Add, edit, or remove sizes for the products."
+      },
+      "orderManagement": {
+        "title": "Order Management",
+        "description": "Manage the different states and details of the orders."
       }
+    }
+  },
+  "adminOrderManagementPage": {
+    "title": "Order Management",
+    "description": "This page will allow you to manage all the orders of the system.",
+    "breadcrumb": "Back to Dashboard",
+    "ordersTable": {
+      "title": "Orders",
+      "searchPlaceholder": "Filter by order ID or client...",
+      "orderId": "Order ID",
+      "client": "Client",
+      "date": "Date",
+      "totalValue": "Total",
+      "status": "Status",
+      "actions": "Actions",
+      "pagination": {
+        "previous": "Previous",
+        "next": "Next"
+      },
+      "noOrders": "There are no orders to display.",
+      "noClient": "No Client"
+    },
+    "orderStatus": {
+      "title": "Filter by Status",
+      "all": "All Statuses",
+      "CREADO": "Created",
+      "CONFIRMADO": "Confirmed",
+      "EN_PREPARACION": "In Preparation",
+      "LISTO": "Ready",
+      "ENTREGADO": "Delivered",
+      "CANCELADO": "Canceled"
+    },
+    "actions": {
+      "view": "View Details",
+      "edit": "Edit Order",
+      "delete": "Delete Order"
     }
   },
   "adminUsersPage": {
@@ -481,6 +521,13 @@
       "creationTab": {
         "title": "Creation #{index}"
       },
+      "cakeDetailsCard": {
+        "title": "Cake Details",
+        "sizeLabel": "Size",
+        "baseLabel": "Sponge",
+        "fillingLabel": "Filling",
+        "frostingLabel": "Frosting"
+      },
       "proposalCard": {
         "title": "Crazy Bakery Proposal",
         "imageAlt": "Visual proposal for the creation"
@@ -524,6 +571,25 @@
         "description": "There was a problem cancelling your order. Please try again."
       }
     }
+  },
+  "editOrderModal": {
+    "title": "Edit Order",
+    "cancel": "Cancel",
+    "save": "Save Changes"
+  },
+  "orderModal": {
+    "title": "Order Details",
+    "orderDetails": "Order Details",
+    "orderId": "Order ID",
+    "date": "Date",
+    "status": "Status",
+    "customerDetails": "Customer Details",
+    "customerName": "Name",
+    "customerEmail": "Email",
+    "recipes": "Recipes",
+    "subtotal": "Subtotal",
+    "total": "Total",
+    "close": "Close"
   },
   "orderWizard": {
     "title": "Create Your Own Order",
@@ -635,15 +701,6 @@
       "productCost": "Product Cost",
       "shippingCost": "Shipping Cost",
       "totalCost": "Total Cost"
-    },
-    "recipeTypeDescriptions": {
-      "cake": "Choose this option if you want a custom cake.",
-      "cupcake": "Choose this option if you want custom cupcakes."
-    },
-    "sizeDetails": {
-      "portions": "Portions",
-      "height": "Height",
-      "diameter": "Diameter"
     },
     "buttons": {
       "next": "Next",
