@@ -122,11 +122,8 @@ export type Order = {
  * @returns Una promesa que resuelve con un array de órdenes.
  */
 export async function getOrdersByUserId(usuarioId: string): Promise<Order[]> {
-  // NOTA: Por ahora, no hay un usuario logueado, se usará un ID de prueba.
-  // En una implementación real, el ID vendría de la sesión del usuario.
-  const mockUserId = 'wVx7S0Aw4GQbARaSCR2XRpwsAsS2';
 
-  const url = `${BASE_URL}/orden/usuario/${mockUserId}`;
+  const url = `${BASE_URL}/orden/usuario/${usuarioId}`;
 
   try {
     const response = await fetch(url, {
