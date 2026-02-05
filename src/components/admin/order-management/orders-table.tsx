@@ -13,14 +13,14 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Order, Estado } from '@/lib/types/order';
 import { getDictionary } from '@/lib/get-dictionary';
-import { Eye, Pencil, Trash2 } from 'lucide-react';
+import { Eye, Pencil } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { OrderDetailsModal } from './order-details-modal';
 import { EditOrderStatusModal } from './edit-order-status-modal';
 
 interface OrdersTableProps {
   orders: Order[];
-  dictionary: Awaited<ReturnType<typeof getDictionary>>;
+  dictionary: Awaited<ReturnType<typeof getDictionary>>[];
   onStatusChange: (orderId: number, newStatus: Estado) => void;
 }
 
@@ -94,10 +94,6 @@ export function OrdersTable({ orders, dictionary, onStatusChange }: OrdersTableP
                     <Button variant="outline" size="icon" className="h-9 w-9 border-[#D4BBAA] rounded-md" onClick={() => handleEditStatus(order)} disabled={!isEditable}>
                         <Pencil className="h-4 w-4 text-[#8C6D5B]" />
                         <span className="sr-only">{actionsDict.edit || 'Edit'}</span>
-                    </Button>
-                    <Button variant="destructive" size="icon" className="h-9 w-9 bg-red-500 hover:bg-red-600 rounded-md">
-                        <Trash2 className="h-4 w-4 text-white" />
-                        <span className="sr-only">{actionsDict.delete || 'Delete'}</span>
                     </Button>
                 </TableCell>
               </TableRow>

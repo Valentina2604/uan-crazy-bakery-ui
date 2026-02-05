@@ -53,7 +53,7 @@ export function OrderDetailsModal({ isOpen, onClose, order, dictionary }: OrderD
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="max-w-4xl">
+      <DialogContent className="max-w-6xl">
         <DialogHeader>
           <DialogTitle>
             {orderDetailsModal.title.replace('{orderId}', order.id.toString())}
@@ -67,36 +67,6 @@ export function OrderDetailsModal({ isOpen, onClose, order, dictionary }: OrderD
             </span>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <Card>
-              <CardHeader><CardTitle>{orderDetailsModal.shippingAddressCard.title}</CardTitle></CardHeader>
-              <CardContent className="text-sm text-muted-foreground space-y-1">
-                <p className="font-semibold text-primary">{order.usuario.nombre} {order.usuario.apellido}</p>
-                <p>{order.usuario.direccion}</p>
-                <p>Tel: {order.usuario.telefono}</p>
-                <p>{order.usuario.ciudad}</p>
-              </CardContent>
-            </Card>
-            <Card>
-              <CardHeader><CardTitle>{orderDetailsModal.orderCostCard.title}</CardTitle></CardHeader>
-              <CardContent className="text-sm space-y-2">
-                 <div className="flex justify-between items-center text-muted-foreground">
-                  <span>{orderDetailsModal.orderCostCard.subtotalLabel}:</span>
-                  <span>{formatCurrency(order.valorTotal)}</span>
-                </div>
-                <div className="flex justify-between items-center text-muted-foreground">
-                  <span>{orderDetailsModal.orderCostCard.shippingLabel}:</span>
-                  <span>{formatCurrency(SHIPPING_COST)}</span>
-                </div>
-                <hr className="my-1"/>
-                <div className="flex justify-between items-center font-semibold text-primary text-base">
-                  <span>{orderDetailsModal.orderCostCard.totalLabel}:</span>
-                  <span>{formatCurrency(order.valorTotal + SHIPPING_COST)}</span>
-                </div>
-              </CardContent>
-            </Card>
-          </div>
-
           <Tabs defaultValue="creacion-0" className="w-full">
             <TabsList>
               {order.recetas.map((_, index) => (
@@ -108,26 +78,57 @@ export function OrderDetailsModal({ isOpen, onClose, order, dictionary }: OrderD
             {order.recetas.map((receta, index) => (
               <TabsContent key={index} value={`creacion-${index}`}>
                 <div className="grid gap-4 mt-4">
-                  {receta.torta && (
-                  <Card>
-                    <CardHeader><CardTitle>{orderDetailsModal.cakeDetailsCard.title}</CardTitle></CardHeader>
-                    <CardContent className="text-sm">
-                      <div className="grid grid-cols-2 gap-x-4 gap-y-2">
-                        <p className="font-semibold text-muted-foreground">{orderDetailsModal.cakeDetailsCard.sizeLabel}:</p>
-                        <p>{receta.torta.tamano.nombre}</p>
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <Card>
+                      <CardHeader><CardTitle>{orderDetailsModal.shippingAddressCard.title}</CardTitle></CardHeader>
+                      <CardContent className="text-sm text-muted-foreground space-y-1">
+                        <p className="font-semibold text-primary">{order.usuario.nombre} {order.usuario.apellido}</p>
+                        <p>{order.usuario.direccion}</p>
+                        <p>Tel: {order.usuario.telefono}</p>
+                        <p>{order.usuario.ciudad}</p>
+                      </CardContent>
+                    </Card>
 
-                        <p className="font-semibold text-muted-foreground">{orderDetailsModal.cakeDetailsCard.baseLabel}:</p>
-                        <p>{receta.torta.bizcocho.nombre}</p>
+                    {receta.torta && (
+                      <Card>
+                        <CardHeader><CardTitle>{orderDetailsModal.cakeDetailsCard.title}</CardTitle></CardHeader>
+                        <CardContent className="text-sm">
+                          <div className="grid grid-cols-2 gap-x-4 gap-y-2">
+                            <p className="font-semibold text-muted-foreground">{orderDetailsModal.cakeDetailsCard.sizeLabel}:</p>
+                            <p>{receta.torta.tamano.nombre}</p>
 
-                        <p className="font-semibold text-muted-foreground">{orderDetailsModal.cakeDetailsCard.fillingLabel}:</p>
-                        <p>{receta.torta.relleno.nombre}</p>
+                            <p className="font-semibold text-muted-foreground">{orderDetailsModal.cakeDetailsCard.baseLabel}:</p>
+                            <p>{receta.torta.bizcocho.nombre}</p>
 
-                        <p className="font-semibold text-muted-foreground">{orderDetailsModal.cakeDetailsCard.frostingLabel}:</p>
-                        <p>{receta.torta.cubertura.nombre}</p>
-                      </div>
-                    </CardContent>
-                  </Card>
-                  )}
+                            <p className="font-semibold text-muted-foreground">{orderDetailsModal.cakeDetailsCard.fillingLabel}:</p>
+                            <p>{receta.torta.relleno.nombre}</p>
+
+                            <p className="font-semibold text-muted-foreground">{orderDetailsModal.cakeDetailsCard.frostingLabel}:</p>
+                            <p>{receta.torta.cubertura.nombre}</p>
+                          </div>
+                        </CardContent>
+                      </Card>
+                    )}
+
+                    <Card>
+                      <CardHeader><CardTitle>{orderDetailsModal.orderCostCard.title}</CardTitle></CardHeader>
+                      <CardContent className="text-sm space-y-2">
+                        <div className="flex justify-between items-center text-muted-foreground">
+                          <span>{orderDetailsModal.orderCostCard.subtotalLabel}:</span>
+                          <span>{formatCurrency(order.valorTotal)}</span>
+                        </div>
+                        <div className="flex justify-between items-center text-muted-foreground">
+                          <span>{orderDetailsModal.orderCostCard.shippingLabel}:</span>
+                          <span>{formatCurrency(SHIPPING_COST)}</span>
+                        </div>
+                        <hr className="my-1"/>
+                        <div className="flex justify-between items-center font-semibold text-primary text-base">
+                          <span>{orderDetailsModal.orderCostCard.totalLabel}:</span>
+                          <span>{formatCurrency(order.valorTotal + SHIPPING_COST)}</span>
+                        </div>
+                      </CardContent>
+                    </Card>
+                  </div>
 
                   {receta.imagenUrl && (
                     <Card>
