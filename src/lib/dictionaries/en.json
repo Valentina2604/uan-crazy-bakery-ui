@@ -1,4 +1,3 @@
-
 {
   "navigation": {
     "home": "Home",
@@ -211,7 +210,7 @@
       "all": "All Statuses",
       "CREADO": "Created",
       "CONFIRMADO": "Confirmed",
-      "EN_PREPARACION": "In Preparation",
+      "EN_PROCESO": "In Process",
       "LISTO": "Ready",
       "ENTREGADO": "Delivered",
       "CANCELADO": "Canceled"
