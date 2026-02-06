@@ -200,7 +200,8 @@
       "actions": "Acciones",
       "pagination": {
         "previous": "Anterior",
-        "next": "Siguiente"
+        "next": "Siguiente",
+        "page": "Página {currentPage} de {totalPages}"
       },
       "noOrders": "No hay pedidos para mostrar.",
       "noClient": "Sin Cliente"
