@@ -19,13 +19,20 @@ type EditOrderStatusModalProps = {
   onStatusChange: (orderId: number, newStatus: Estado) => void;
 };
 
+const statusSequence: Estado[] = ['CREADO', 'CONFIRMADO', 'EN_PREPARACION', 'LISTO', 'ENTREGADO'];
+
 export function EditOrderStatusModal({ isOpen, onClose, order, dictionary, onStatusChange }: EditOrderStatusModalProps) {
   const [currentStatus, setCurrentStatus] = useState<Estado | undefined>(undefined);
   const [notes, setNotes] = useState('');
 
   useEffect(() => {
     if (order) {
-      setCurrentStatus(order.estado);
+      const currentIndex = statusSequence.findIndex(s => s === order.estado);
+      const nextStatus =
+        currentIndex !== -1 && currentIndex < statusSequence.length - 1
+          ? statusSequence[currentIndex + 1]
+          : order.estado;
+      setCurrentStatus(nextStatus);
       // Assuming notes could come from the order object in the future, e.g., order.notes
       // setNotes(order.notes || '');
     }
